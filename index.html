@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rohit Thakur | AI/ML Engineer</title>
+<meta name="description" content="Rohit Thakur - AI/ML Engineer with 8+ years of experience in LLM agents, computer vision, and manufacturing analytics.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a2e;--bg4:#16213e;
+  --text:#e0e0e0;--text2:#a0a0b0;--text3:#707080;
+  --accent:#60a5fa;--accent2:#818cf8;--accent3:#a78bfa;
+  --gradient:linear-gradient(135deg,#60a5fa,#818cf8,#a78bfa);
+  --card-bg:rgba(26,26,46,0.6);--card-border:rgba(96,165,250,0.1);
+  --radius:16px;--transition:0.3s cubic-bezier(0.4,0,0.2,1);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
+::selection{background:var(--accent);color:#fff}
+a{color:var(--accent);text-decoration:none;transition:color var(--transition)}
+a:hover{color:var(--accent3)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* Nav */
+nav{position:fixed;top:0;width:100%;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid var(--card-border);transition:var(--transition)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center}
+.nav-logo{font-weight:700;font-size:1.2rem;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);font-size:0.9rem;font-weight:500;position:relative;padding-bottom:4px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gradient);transition:width var(--transition)}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none}
+.hamburger span{width:24px;height:2px;background:var(--text2);transition:var(--transition)}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:6rem 2rem 4rem}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(96,165,250,0.06) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(129,140,248,0.04) 0%,transparent 60%);animation:drift 20s ease-in-out infinite alternate}
+@keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(-5%,3%)}}
+.hero-content{max-width:800px;text-align:center;position:relative;z-index:1}
+.hero-badge{display:inline-block;padding:0.4rem 1.2rem;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);border-radius:50px;font-size:0.8rem;font-weight:500;color:var(--accent);margin-bottom:1.5rem;letter-spacing:0.5px}
+.hero h1{font-size:3.5rem;font-weight:800;line-height:1.1;margin-bottom:1rem}
+.hero h1 .gradient{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-subtitle{font-size:1.15rem;color:var(--text2);max-width:600px;margin:0 auto 2rem;line-height:1.8}
+.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:2.5rem;flex-wrap:wrap}
+.stat{text-align:center}
+.stat-number{font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:0.2rem}
+.hero-buttons{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap}
+.btn{padding:0.75rem 2rem;border-radius:50px;font-weight:600;font-size:0.9rem;transition:var(--transition);cursor:pointer;border:none;font-family:inherit}
+.btn-primary{background:var(--gradient);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(96,165,250,0.3)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--card-border)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+
+/* Sections */
+section{padding:5rem 2rem}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-label{display:inline-block;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:0.8rem}
+.section-title{font-size:2.2rem;font-weight:700;margin-bottom:1rem}
+.section-desc{color:var(--text2);max-width:600px;margin-bottom:3rem}
+
+/* About */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.about-text p{color:var(--text2);margin-bottom:1rem;line-height:1.9}
+.about-highlights{display:grid;gap:1rem}
+.highlight-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1rem;transition:var(--transition)}
+.highlight-card:hover{border-color:var(--accent);transform:translateX(4px)}
+.highlight-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.highlight-icon.blue{background:rgba(96,165,250,0.15)}
+.highlight-icon.purple{background:rgba(129,140,248,0.15)}
+.highlight-icon.violet{background:rgba(167,139,250,0.15)}
+.highlight-icon.green{background:rgba(52,211,153,0.15)}
+.highlight-info h4{font-size:0.95rem;font-weight:600;margin-bottom:0.15rem}
+.highlight-info p{font-size:0.82rem;color:var(--text3);margin:0}
+
+/* Skills */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
+.skill-category{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.8rem;transition:var(--transition)}
+.skill-category:hover{border-color:var(--accent);transform:translateY(-4px)}
+.skill-category h3{font-size:1rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem}
+.skill-tags{display:flex;flex-wrap:wrap;gap:0.5rem}
+.skill-tag{padding:0.3rem 0.8rem;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);border-radius:50px;font-size:0.78rem;color:var(--text2);transition:var(--transition);font-family:'JetBrains Mono',monospace}
+.skill-tag:hover{background:rgba(96,165,250,0.15);color:var(--accent);border-color:var(--accent)}
+
+/* Experience */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3),transparent)}
+.timeline-item{position:relative;margin-bottom:3rem;padding-left:2rem}
+.timeline-item::before{content:'';position:absolute;left:-2rem;top:6px;width:14px;height:14px;border-radius:50%;border:3px solid var(--accent);background:var(--bg);z-index:1;margin-left:-6px}
+.timeline-item.current::before{background:var(--accent);box-shadow:0 0 12px rgba(96,165,250,0.5)}
+.timeline-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem}
+.timeline-title{font-size:1.2rem;font-weight:700}
+.timeline-company{font-size:1rem;color:var(--accent);font-weight:500}
+.timeline-meta{font-size:0.82rem;color:var(--text3);margin-bottom:0.4rem}
+.timeline-dates{font-size:0.82rem;color:var(--text3);background:var(--bg3);padding:0.3rem 0.8rem;border-radius:50px;white-space:nowrap}
+.timeline-summary{color:var(--text2);font-size:0.92rem;font-style:italic;margin-bottom:1rem;line-height:1.8;border-left:3px solid var(--accent);padding-left:1rem;background:rgba(96,165,250,0.03);padding:0.8rem 1rem;border-radius:0 8px 8px 0}
+.timeline-bullets{list-style:none;padding:0}
+.timeline-bullets li{position:relative;padding-left:1.2rem;margin-bottom:0.6rem;font-size:0.88rem;color:var(--text2);line-height:1.7}
+.timeline-bullets li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--accent2)}
+
+/* Projects */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:1.5rem}
+.project-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.8rem;transition:var(--transition);position:relative;overflow:hidden}
+.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity var(--transition)}
+.project-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.project-card:hover::before{opacity:1}
+.project-card h3{font-size:1.05rem;font-weight:600;margin-bottom:0.5rem}
+.project-card p{font-size:0.85rem;color:var(--text2);margin-bottom:1rem;line-height:1.7}
+.project-tech{display:flex;flex-wrap:wrap;gap:0.4rem}
+.project-tech span{padding:0.2rem 0.6rem;background:rgba(129,140,248,0.1);border-radius:50px;font-size:0.72rem;color:var(--accent2);font-family:'JetBrains Mono',monospace}
+.project-metric{display:inline-block;padding:0.2rem 0.6rem;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);border-radius:50px;font-size:0.72rem;color:#34d399;font-weight:600;margin-bottom:0.8rem}
+
+/* Publications */
+.pub-list{display:grid;gap:1rem}
+.pub-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.5rem;transition:var(--transition)}
+.pub-item:hover{border-color:var(--accent)}
+.pub-item h4{font-size:0.95rem;font-weight:600;margin-bottom:0.3rem}
+.pub-item p{font-size:0.82rem;color:var(--text3)}
+
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem}
+.contact-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.5rem;text-align:center;transition:var(--transition)}
+.contact-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.contact-card .icon{font-size:1.5rem;margin-bottom:0.5rem}
+.contact-card h4{font-size:0.9rem;font-weight:600;margin-bottom:0.3rem}
+.contact-card p{font-size:0.82rem;color:var(--text2)}
+
+/* Footer */
+footer{text-align:center;padding:2rem;border-top:1px solid var(--card-border);font-size:0.82rem;color:var(--text3)}
+
+/* Animations */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* Responsive */
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(10,10,15,0.95);padding:1.5rem 2rem;gap:1rem;border-bottom:1px solid var(--card-border)}
+  .nav-links.active{display:flex}
+  .hamburger{display:flex}
+  .hero h1{font-size:2.2rem}
+  .hero-stats{gap:1.5rem}
+  .about-grid{grid-template-columns:1fr}
+  .skills-grid{grid-template-columns:1fr}
+  .projects-grid{grid-template-columns:1fr}
+  .timeline-header{flex-direction:column}
+  section{padding:3rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">RT</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content fade-in">
+    <div class="hero-badge">AI/ML Engineer &bull; Seoul, South Korea</div>
+    <h1>Hi, I'm <span class="gradient">Rohit Thakur</span></h1>
+    <p class="hero-subtitle">I build production-grade AI systems&mdash;from LLM-powered agents and real-time computer vision to scalable manufacturing analytics platforms serving global enterprises.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-number">8+</div><div class="stat-label">Years Experience</div></div>
+      <div class="stat"><div class="stat-number">15+</div><div class="stat-label">Production Systems</div></div>
+      <div class="stat"><div class="stat-number">3</div><div class="stat-label">Publications</div></div>
+      <div class="stat"><div class="stat-number">210+</div><div class="stat-label">ML Tests Built</div></div>
+    </div>
+    <div class="hero-buttons">
+      <a href="https://github.com/trohit920" class="btn btn-primary" target="_blank" rel="noopener">GitHub Profile</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div class="section-inner fade-in">
+    <div class="section-label">About Me</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 class="section-title">Engineering AI for the Real World</h2>
+        <p>I'm an AI/ML Engineer specializing in building intelligent systems that solve complex manufacturing and industrial challenges. My work spans the full AI stack&mdash;from designing LLM-powered conversational agents and predictive ML pipelines to deploying real-time computer vision systems on edge devices.</p>
+        <p>Currently at <strong>eMoldino</strong>, I architect a manufacturing intelligence ecosystem integrating AWS Bedrock, Snowflake, and FastAPI that serves global clients like PACCAR, Jaguar, and Eaton. Previously, I led an AI engineering team at OpenSysNet and developed ADAS/DMS systems at Pittasoft.</p>
+        <p>I hold an M.S. from GIST (South Korea) with a specialization in AI/ML, and I'm passionate about bridging research and production to deliver measurable business impact.</p>
+      </div>
+      <div class="about-highlights">
+        <div class="highlight-card"><div class="highlight-icon blue">&#x1F916;</div><div class="highlight-info"><h4>LLM Agent Architecture</h4><p>Production agents with LangGraph, Bedrock, MCP</p></div></div>
+        <div class="highlight-card"><div class="highlight-icon purple">&#x1F441;</div><div class="highlight-info"><h4>Computer Vision</h4><p>ADAS, DMS, industrial detection at 99.5% mAP</p></div></div>
+        <div class="highlight-card"><div class="highlight-icon violet">&#x1F4CA;</div><div class="highlight-info"><h4>Manufacturing Analytics</h4><p>Capacity, downtime, scrap prediction pipelines</p></div></div>
+        <div class="highlight-card"><div class="highlight-icon green">&#x1F3AF;</div><div class="highlight-info"><h4>MLOps & Deployment</h4><p>Docker, K8s, MLFlow, CI/CD, Langfuse</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Skills -->
+<section id="skills" style="background:var(--bg2)">
+  <div class="section-inner fade-in">
+    <div class="section-label">Technical Skills</div>
+    <h2 class="section-title">Tools & Technologies</h2>
+    <p class="section-desc">A comprehensive stack built across 8+ years of production AI development.</p>
+    <div class="skills-grid">
+      <div class="skill-category">
+        <h3>&#x1F4BB; Programming</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Python</span><span class="skill-tag">C++</span><span class="skill-tag">SQL</span><span class="skill-tag">R</span><span class="skill-tag">Java</span><span class="skill-tag">JavaScript</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>&#x1F9E0; AI/ML Frameworks</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">TensorFlow</span><span class="skill-tag">PyTorch</span><span class="skill-tag">Keras</span><span class="skill-tag">scikit-learn</span><span class="skill-tag">LangChain</span><span class="skill-tag">LangGraph</span><span class="skill-tag">DeepEval</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>&#x1F440; Computer Vision</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">OpenCV</span><span class="skill-tag">ONNX</span><span class="skill-tag">MediaPipe</span><span class="skill-tag">YOLOv5/v8</span><span class="skill-tag">U-Net</span><span class="skill-tag">FFmpeg</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>&#x2728; LLM & GenAI</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">AWS Bedrock</span><span class="skill-tag">Claude 3.7</span><span class="skill-tag">GPT-4o</span><span class="skill-tag">RAG</span><span class="skill-tag">MCP Protocol</span><span class="skill-tag">Prompt Engineering</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>&#x2601; Data & Cloud</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Snowflake</span><span class="skill-tag">Snowpark</span><span class="skill-tag">Pandas</span><span class="skill-tag">NumPy</span><span class="skill-tag">SciPy</span><span class="skill-tag">Spark</span><span class="skill-tag">Kafka</span><span class="skill-tag">Azure ML</span><span class="skill-tag">Databricks</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h3>&#x1F6E0; MLOps & DevOps</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Docker</span><span class="skill-tag">Kubernetes</span><span class="skill-tag">MLFlow</span><span class="skill-tag">Git</span><span class="skill-tag">CI/CD</span><span class="skill-tag">Langfuse</span><span class="skill-tag">FastAPI</span><span class="skill-tag">Streamlit</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Experience -->
+<section id="experience">
+  <div class="section-inner fade-in">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title">Career Journey</h2>
+    <p class="section-desc">Building AI solutions across manufacturing, automotive, and IoT domains.</p>
+    <div class="timeline">
+
+      <!-- eMoldino -->
+      <div class="timeline-item current">
+        <div class="timeline-header">
+          <div>
+            <div class="timeline-title">AI-ML Engineer</div>
+            <div class="timeline-company">eMoldino</div>
+            <div class="timeline-meta">Seoul, South Korea</div>
+          </div>
+          <span class="timeline-dates">Apr 2025 &ndash; Present</span>
+        </div>
+        <div class="timeline-summary">Spearheaded the design and delivery of eMoldino's AI analytics platform for B2B injection molding manufacturing, building 15+ production-grade systems spanning LLM-powered agents, predictive ML pipelines, real-time IoT analytics, and automated reporting tools. Architected a full-stack manufacturing intelligence ecosystem integrating AWS Bedrock, Snowflake, and FastAPI serving multiple global clients (PACCAR, Jaguar, Eaton).</div>
+        <ul class="timeline-bullets">
+          <li>Built a Production Insight LLM Agent using AWS Bedrock (Claude 3.7 Sonnet), LangGraph, and Snowflake with intent-driven routing and a React frontend with real-time streaming</li>
+          <li>Developed AI-Powered Cycle Time Deviation Analysis with adaptive window algorithms (30-90 day) and statistical significance testing (Mann-Whitney U, Chi-square)</li>
+          <li>Deployed Scrap Rate Prediction pipeline improving test MAE by 33% (16.3% &rarr; 10.9%)</li>
+          <li>Engineered Manufacturing MCP Server (v3.1) with 4 core analytics tools via FastAPI with async job queues and multi-user session support</li>
+          <li>Created Combined Tooling Report Agent for executive summaries and actionable recommendations using LangChain and AWS Bedrock</li>
+          <li>Built LLM Evaluation Framework with 210+ tests, LLM-as-Judge and DeepEval metrics across 4 manufacturing modules</li>
+          <li>Designed Capacity Risk Analysis with Physics-of-Loss methodology, rolling risk scores, and OLS-based burn-up forecasting with Langfuse tracing</li>
+          <li>Developed Downtime Detection system extracting 11+ engineered features per event with automated Snowflake upload</li>
+          <li>Built acceleration sensor pipelines with RMS/Crest Factor metrics and KS testing for anomaly detection</li>
+        </ul>
+      </div>
+
+      <!-- OpenSysNet -->
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div>
+            <div class="timeline-title">AI Engineering Manager</div>
+            <div class="timeline-company">OpenSysNet Co., Ltd.</div>
+            <div class="timeline-meta">Pangyo, Seoul, South Korea</div>
+          </div>
+          <span class="timeline-dates">May 2022 &ndash; Apr 2025</span>
+        </div>
+        <ul class="timeline-bullets">
+          <li>Led and mentored a team of 5 AI engineers, implementing SAFe Agile to improve delivery</li>
+          <li>Pantograph Monitoring System: real-time railway fault detection at 95.5% accuracy using YOLOv8 and edge processing</li>
+          <li>Sorting Robot Vision System: 99.5% mAP@50 object detection, improving manufacturing efficiency by 20%</li>
+          <li>LSTM and Gradient Boosting models for energy consumption optimization achieving 12.3% energy savings</li>
+          <li>Computer vision applications: golf swing analysis, face/fire/hand detection, drone OCR</li>
+        </ul>
+      </div>
+
+      <!-- Pittasoft -->
+      <div class="timeline-item">
+        <div class="timeline-header">
+          <div>
+            <div class="timeline-title">Research & Development Engineer</div>
+            <div class="timeline-company">Pittasoft Co., Ltd.</div>
+            <div class="timeline-meta">Seoul, South Korea</div>
+          </div>
+          <span class="timeline-dates">Sep 2017 &ndash; Apr 2022</span>
+        </div>
+        <ul class="timeline-bullets">
+          <li>Led ADAS development: forward vehicle detection, traffic light recognition, Forward Vehicle Start Alarm</li>
+          <li>Trained TensorFlow YOLO models for Driver Monitoring System (DMS) for distraction and drowsiness detection</li>
+          <li>Applied VGG-based U-Net for high-accuracy medical image segmentation</li>
+          <li>Built end-to-end video processing pipelines using OpenCV and FFmpeg for real-time streams</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Projects -->
+<section id="projects" style="background:var(--bg2)">
+  <div class="section-inner fade-in">
+    <div class="section-label">Key Projects</div>
+    <h2 class="section-title">What I've Built</h2>
+    <p class="section-desc">Highlights from my manufacturing AI and computer vision work.</p>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <h3>Production Insight LLM Agent</h3>
+        <div class="project-metric">v1.8 &bull; Full-Stack</div>
+        <p>Collaborative LLM agent for manufacturing IoT data with intent-driven routing, hierarchical graph workflows, knowledge graph integration, and real-time streaming React frontend.</p>
+        <div class="project-tech"><span>AWS Bedrock</span><span>LangGraph</span><span>FastAPI</span><span>React</span><span>Snowflake</span><span>MCP</span></div>
+      </div>
+
+      <div class="project-card">
+        <h3>Manufacturing MCP Server</h3>
+        <div class="project-metric">v3.1 &bull; 4 Analytics Tools</div>
+        <p>B2B analytics server providing ROI Analysis, RunRate, Capacity Planning, and CT Efficiency via MCP protocol with async job queue, SQLite persistence, and rate limiting.</p>
+        <div class="project-tech"><span>FastAPI</span><span>Snowpark</span><span>SQLAlchemy</span><span>Bedrock</span><span>Pydantic</span></div>
+      </div>
+
+      <div class="project-card">
+        <h3>LLM Evaluation Framework</h3>
+        <div class="project-metric">210+ Tests &bull; 4 Modules</div>
+        <p>End-to-end evaluation pipeline comparing prompt variants with LLM-as-Judge scoring (6 criteria) and DeepEval metrics (Faithfulness, Hallucination, Answer Relevancy).</p>
+        <div class="project-tech"><span>DeepEval</span><span>Claude</span><span>GPT-4o</span><span>Snowflake</span><span>pytest</span></div>
+      </div>
+
+      <div class="project-card">
+        <h3>Capacity Risk Analysis</h3>
+        <div class="project-metric">Physics-of-Loss &bull; AI Insights</div>
+        <p>Interactive dashboard with rolling risk scores, waterfall analysis, OLS forecasting, and Bedrock-powered AI insights with Langfuse observability tracing.</p>
+        <div class="project-tech"><span>Streamlit</span><span>Plotly</span><span>Bedrock</span><span>Langfuse</span><span>Snowflake</span></div>
+      </div>
+
+      <div class="project-card">
+        <h3>Pantograph Monitoring System</h3>
+        <div class="project-metric">95.5% Accuracy &bull; Award Winner</div>
+        <p>Real-time railway pantograph fault detection system using YOLOv8 with edge processing for live video streams. Won Innovation Award at OpenSysNet.</p>
+        <div class="project-tech"><span>YOLOv8</span><span>OpenCV</span><span>Edge AI</span><span>Python</span></div>
+      </div>
+
+      <div class="project-card">
+        <h3>Sorting Robot Vision</h3>
+        <div class="project-metric">99.5% mAP@50 &bull; +20% Efficiency</div>
+        <p>AI object detection system for industrial sorting robots that improved manufacturing efficiency by 20% with near-perfect detection accuracy.</p>
+        <div class="project-tech"><span>YOLO</span><span>OpenCV</span><span>ONNX</span><span>Python</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Publications -->
+<section id="publications">
+  <div class="section-inner fade-in">
+    <div class="section-label">Research</div>
+    <h2 class="section-title">Publications</h2>
+    <div class="pub-list">
+      <div class="pub-item">
+        <h4>Energy Consumption Prediction Using LSTM Models</h4>
+        <p>International Conference on Machine Learning and Applications (ICMLA)</p>
+      </div>
+      <div class="pub-item">
+        <h4>Concurrent Food Localization and Recognition</h4>
+        <p>Korean Institute of Communications and Information Sciences (KICS), 2017</p>
+      </div>
+      <div class="pub-item">
+        <h4>Augmentation of RGB Dataset for Improved Performance on Infrared Classifier</h4>
+        <p>Electronics and Information Communications Conference, 2016</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Education -->
+<section style="background:var(--bg2)">
+  <div class="section-inner fade-in">
+    <div class="section-label">Education</div>
+    <h2 class="section-title">Academic Background</h2>
+    <div class="projects-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+      <div class="project-card">
+        <h3>M.S. in Electrical Engineering & Computer Science</h3>
+        <p>Gwangju Institute of Science and Technology (GIST), South Korea &bull; 2017<br>Specialization: Artificial Intelligence and Machine Learning</p>
+      </div>
+      <div class="project-card">
+        <h3>B.Tech. in Electronics & Communication Engineering</h3>
+        <p>Green Hills Engineering College, India &bull; 2014</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="section-inner fade-in">
+    <div class="section-label">Get in Touch</div>
+    <h2 class="section-title">Let's Connect</h2>
+    <p class="section-desc">Open to collaborations, consulting, and new opportunities in AI/ML.</p>
+    <div class="contact-grid">
+      <a href="mailto:trohit920@gmail.com" class="contact-card">
+        <div class="icon">&#x2709;</div>
+        <h4>Email</h4>
+        <p>trohit920@gmail.com</p>
+      </a>
+      <a href="https://github.com/trohit920" target="_blank" rel="noopener" class="contact-card">
+        <div class="icon">&#x1F4BB;</div>
+        <h4>GitHub</h4>
+        <p>trohit920</p>
+      </a>
+      <a href="tel:+821020515650" class="contact-card">
+        <div class="icon">&#x1F4F1;</div>
+        <h4>Phone</h4>
+        <p>+82-10-2051-5650</p>
+      </a>
+      <div class="contact-card">
+        <div class="icon">&#x1F30F;</div>
+        <h4>Location</h4>
+        <p>Seoul, South Korea</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Rohit Thakur. Built with passion for AI.</p>
+</footer>
+
+<script>
+// Hamburger
+document.getElementById('hamburger').addEventListener('click',()=>{
+  document.getElementById('navLinks').classList.toggle('active');
+});
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('active'));
+});
+
+// Fade-in on scroll
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+},{threshold:0.1});
+document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
+
+// Smooth nav background
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  const nav=document.querySelector('nav');
+  nav.style.boxShadow=window.scrollY>50?'0 4px 30px rgba(0,0,0,0.3)':'none';
+});
+</script>
+</body>
+</html>
