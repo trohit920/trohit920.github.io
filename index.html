@@ -1,490 +1,700 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rohit Thakur | AI/ML Engineer</title>
-<meta name="description" content="Rohit Thakur - AI/ML Engineer with 8+ years of experience in LLM agents, computer vision, and manufacturing analytics.">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rohit Thakur — AI/ML Engineer</title>
+<meta name="description" content="AI/ML engineer with 8+ years building production AI: agentic LLM systems with measured evaluation, real-time edge computer vision, and manufacturing analytics. Seoul, South Korea.">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="Rohit Thakur — AI/ML Engineer">
+<meta property="og:description" content="Agentic LLM systems, uncertainty quantification, and real-time edge vision. 8+ years shipping production AI.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://trohit920.github.io">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a2e;--bg4:#16213e;
-  --text:#e0e0e0;--text2:#a0a0b0;--text3:#707080;
-  --accent:#60a5fa;--accent2:#818cf8;--accent3:#a78bfa;
-  --gradient:linear-gradient(135deg,#60a5fa,#818cf8,#a78bfa);
-  --card-bg:rgba(26,26,46,0.6);--card-border:rgba(96,165,250,0.1);
-  --radius:16px;--transition:0.3s cubic-bezier(0.4,0,0.2,1);
+  --bg:#08090b; --bg-1:#0e1014; --bg-2:#14171d; --line:#22262e;
+  --ink:#eef1f6; --ink-2:#a8b0bd; --ink-3:#6b7482;
+  --blue:#3987e5; --aqua:#199e70; --orange:#d95926; --yellow:#c98500; --violet:#9085e9;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --maxw:1080px;
 }
-html{scroll-behavior:smooth;font-size:16px}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden}
-::selection{background:var(--accent);color:#fff}
-a{color:var(--accent);text-decoration:none;transition:color var(--transition)}
-a:hover{color:var(--accent3)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px}
 
-/* Scrollbar */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:60;background:rgba(8,9,11,.82);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink);letter-spacing:.02em}
+.brand span{color:var(--blue)}
+.navlinks{display:flex;gap:26px}
+.navlinks a{font-size:13.5px;color:var(--ink-2);font-weight:500}
+.navlinks a:hover{color:var(--ink);text-decoration:none}
+@media(max-width:720px){.navlinks{display:none}}
 
-/* Nav */
-nav{position:fixed;top:0;width:100%;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid var(--card-border);transition:var(--transition)}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0.8rem 2rem;display:flex;justify-content:space-between;align-items:center}
-.nav-logo{font-weight:700;font-size:1.2rem;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{color:var(--text2);font-size:0.9rem;font-weight:500;position:relative;padding-bottom:4px}
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gradient);transition:width var(--transition)}
-.nav-links a:hover{color:var(--text)}
-.nav-links a:hover::after{width:100%}
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none}
-.hamburger span{width:24px;height:2px;background:var(--text2);transition:var(--transition)}
+/* ---------- hero ---------- */
+.hero{padding:74px 0 64px;position:relative}
+.eyebrow{
+  font-family:var(--mono);font-size:12px;color:var(--aqua);
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;
+  display:flex;align-items:center;gap:9px;
+}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--aqua);
+  box-shadow:0 0 0 0 rgba(25,158,112,.7);animation:pulse 2.4s infinite}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(25,158,112,.55)}
+  70%{box-shadow:0 0 0 9px rgba(25,158,112,0)}
+  100%{box-shadow:0 0 0 0 rgba(25,158,112,0)}
+}
+h1{font-size:clamp(2.5rem,6.2vw,4.1rem);line-height:1.04;margin:0 0 18px;
+  font-weight:800;letter-spacing:-.03em}
+h1 .grad{background:linear-gradient(103deg,var(--blue),var(--violet) 55%,var(--aqua));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:clamp(1.02rem,2.1vw,1.24rem);color:var(--ink-2);max-width:62ch;margin:0 0 30px}
+.tagline b{color:var(--ink);font-weight:600}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:11px 19px;border-radius:9px;
+  font-size:14px;font-weight:600;border:1px solid var(--line);
+  background:var(--bg-1);color:var(--ink);transition:.18s;font-family:var(--sans);
+}
+.btn:hover{text-decoration:none;border-color:var(--blue);transform:translateY(-1px)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:#2f77d0}
 
-/* Hero */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding:6rem 2rem 4rem}
-.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 50%,rgba(96,165,250,0.06) 0%,transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(129,140,248,0.04) 0%,transparent 60%);animation:drift 20s ease-in-out infinite alternate}
-@keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(-5%,3%)}}
-.hero-content{max-width:800px;text-align:center;position:relative;z-index:1}
-.hero-badge{display:inline-block;padding:0.4rem 1.2rem;background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2);border-radius:50px;font-size:0.8rem;font-weight:500;color:var(--accent);margin-bottom:1.5rem;letter-spacing:0.5px}
-.hero h1{font-size:3.5rem;font-weight:800;line-height:1.1;margin-bottom:1rem}
-.hero h1 .gradient{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-subtitle{font-size:1.15rem;color:var(--text2);max-width:600px;margin:0 auto 2rem;line-height:1.8}
-.hero-stats{display:flex;justify-content:center;gap:3rem;margin-top:2.5rem;flex-wrap:wrap}
-.stat{text-align:center}
-.stat-number{font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-label{font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:0.2rem}
-.hero-buttons{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;flex-wrap:wrap}
-.btn{padding:0.75rem 2rem;border-radius:50px;font-weight:600;font-size:0.9rem;transition:var(--transition);cursor:pointer;border:none;font-family:inherit}
-.btn-primary{background:var(--gradient);color:#fff}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(96,165,250,0.3)}
-.btn-outline{background:transparent;color:var(--text);border:1px solid var(--card-border)}
-.btn-outline:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+/* ---------- live uncertainty panel ---------- */
+.panel{
+  border:1px solid var(--line);border-radius:14px;background:
+  linear-gradient(180deg,var(--bg-1),var(--bg));overflow:hidden;
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;
+}
+.panel-title{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase}
+.readouts{display:flex;gap:20px;flex-wrap:wrap}
+.readout{font-family:var(--mono);font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:7px}
+.readout b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;min-width:42px;display:inline-block}
+.meter{width:52px;height:5px;border-radius:3px;background:var(--bg-2);overflow:hidden}
+.meter i{display:block;height:100%;border-radius:3px;transition:width .35s ease}
+canvas{display:block;width:100%;height:150px}
+.panel-foot{padding:10px 16px;border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;color:var(--ink-3)}
 
-/* Sections */
-section{padding:5rem 2rem}
-.section-inner{max-width:1200px;margin:0 auto}
-.section-label{display:inline-block;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:0.8rem}
-.section-title{font-size:2.2rem;font-weight:700;margin-bottom:1rem}
-.section-desc{color:var(--text2);max-width:600px;margin-bottom:3rem}
+/* ---------- metric strip ---------- */
+.metrics{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
+  gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;margin-top:44px;
+}
+.metric{background:var(--bg-1);padding:20px 18px}
+.metric .n{font-family:var(--mono);font-size:1.65rem;font-weight:600;letter-spacing:-.02em;line-height:1}
+.metric .l{font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.4}
 
-/* About */
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
-.about-text p{color:var(--text2);margin-bottom:1rem;line-height:1.9}
-.about-highlights{display:grid;gap:1rem}
-.highlight-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1rem;transition:var(--transition)}
-.highlight-card:hover{border-color:var(--accent);transform:translateX(4px)}
-.highlight-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
-.highlight-icon.blue{background:rgba(96,165,250,0.15)}
-.highlight-icon.purple{background:rgba(129,140,248,0.15)}
-.highlight-icon.violet{background:rgba(167,139,250,0.15)}
-.highlight-icon.green{background:rgba(52,211,153,0.15)}
-.highlight-info h4{font-size:0.95rem;font-weight:600;margin-bottom:0.15rem}
-.highlight-info p{font-size:0.82rem;color:var(--text3);margin:0}
+/* ---------- sections ---------- */
+section{padding:76px 0;border-top:1px solid var(--line)}
+.sec-head{margin-bottom:38px}
+.sec-num{font-family:var(--mono);font-size:12px;color:var(--blue);letter-spacing:.1em;margin-bottom:9px}
+h2{font-size:clamp(1.6rem,3.4vw,2.1rem);margin:0 0 10px;font-weight:700;letter-spacing:-.02em}
+.sec-sub{color:var(--ink-2);max-width:64ch;margin:0}
 
-/* Skills */
-.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
-.skill-category{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.8rem;transition:var(--transition)}
-.skill-category:hover{border-color:var(--accent);transform:translateY(-4px)}
-.skill-category h3{font-size:1rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem}
-.skill-tags{display:flex;flex-wrap:wrap;gap:0.5rem}
-.skill-tag{padding:0.3rem 0.8rem;background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);border-radius:50px;font-size:0.78rem;color:var(--text2);transition:var(--transition);font-family:'JetBrains Mono',monospace}
-.skill-tag:hover{background:rgba(96,165,250,0.15);color:var(--accent);border-color:var(--accent)}
+/* ---------- cards ---------- */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(430px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.card{
+  background:var(--bg-1);border:1px solid var(--line);border-radius:13px;
+  padding:24px;transition:.2s;position:relative;overflow:hidden;
+}
+.card:hover{border-color:#2f3742;transform:translateY(-2px)}
+.card h3{margin:0 0 6px;font-size:1.06rem;font-weight:650;letter-spacing:-.01em}
+.card .meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-bottom:13px}
+.card p{margin:0 0 13px;color:var(--ink-2);font-size:14.5px}
+.card ul{margin:0 0 13px;padding-left:17px;color:var(--ink-2);font-size:14px}
+.card li{margin-bottom:6px}
+.card li::marker{color:var(--ink-3)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{
+  font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:5px;
+  background:var(--bg-2);color:var(--ink-2);border:1px solid var(--line);
+}
+.accent-l{position:absolute;left:0;top:0;bottom:0;width:3px}
 
-/* Experience */
-.timeline{position:relative;padding-left:2rem}
-.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent2),var(--accent3),transparent)}
-.timeline-item{position:relative;margin-bottom:3rem;padding-left:2rem}
-.timeline-item::before{content:'';position:absolute;left:-2rem;top:6px;width:14px;height:14px;border-radius:50%;border:3px solid var(--accent);background:var(--bg);z-index:1;margin-left:-6px}
-.timeline-item.current::before{background:var(--accent);box-shadow:0 0 12px rgba(96,165,250,0.5)}
-.timeline-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem}
-.timeline-title{font-size:1.2rem;font-weight:700}
-.timeline-company{font-size:1rem;color:var(--accent);font-weight:500}
-.timeline-meta{font-size:0.82rem;color:var(--text3);margin-bottom:0.4rem}
-.timeline-dates{font-size:0.82rem;color:var(--text3);background:var(--bg3);padding:0.3rem 0.8rem;border-radius:50px;white-space:nowrap}
-.timeline-summary{color:var(--text2);font-size:0.92rem;font-style:italic;margin-bottom:1rem;line-height:1.8;border-left:3px solid var(--accent);padding-left:1rem;background:rgba(96,165,250,0.03);padding:0.8rem 1rem;border-radius:0 8px 8px 0}
-.timeline-bullets{list-style:none;padding:0}
-.timeline-bullets li{position:relative;padding-left:1.2rem;margin-bottom:0.6rem;font-size:0.88rem;color:var(--text2);line-height:1.7}
-.timeline-bullets li::before{content:'';position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--accent2)}
+/* ---------- timeline ---------- */
+.tl{position:relative;padding-left:30px}
+.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:var(--line)}
+.tl-item{position:relative;padding-bottom:34px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:-27px;top:7px;width:11px;height:11px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--blue);
+}
+.tl-item.past::before{border-color:var(--ink-3)}
+.tl-role{font-size:1.06rem;font-weight:650;margin:0}
+.tl-co{color:var(--blue);font-weight:600}
+.tl-when{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:4px 0 12px}
+.tl-item ul{margin:0 0 12px;padding-left:17px;color:var(--ink-2);font-size:14.5px}
+.tl-item li{margin-bottom:7px}
+.tl-item li::marker{color:var(--ink-3)}
+.tl-item li b{color:var(--ink);font-weight:600}
 
-/* Projects */
-.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:1.5rem}
-.project-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.8rem;transition:var(--transition);position:relative;overflow:hidden}
-.project-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity var(--transition)}
-.project-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.project-card:hover::before{opacity:1}
-.project-card h3{font-size:1.05rem;font-weight:600;margin-bottom:0.5rem}
-.project-card p{font-size:0.85rem;color:var(--text2);margin-bottom:1rem;line-height:1.7}
-.project-tech{display:flex;flex-wrap:wrap;gap:0.4rem}
-.project-tech span{padding:0.2rem 0.6rem;background:rgba(129,140,248,0.1);border-radius:50px;font-size:0.72rem;color:var(--accent2);font-family:'JetBrains Mono',monospace}
-.project-metric{display:inline-block;padding:0.2rem 0.6rem;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);border-radius:50px;font-size:0.72rem;color:#34d399;font-weight:600;margin-bottom:0.8rem}
+/* ---------- skills ---------- */
+.skill{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:20px}
+.skill h4{margin:0 0 12px;font-size:13px;font-family:var(--mono);color:var(--ink-3);
+  letter-spacing:.07em;text-transform:uppercase}
 
-/* Publications */
-.pub-list{display:grid;gap:1rem}
-.pub-item{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.5rem;transition:var(--transition)}
-.pub-item:hover{border-color:var(--accent)}
-.pub-item h4{font-size:0.95rem;font-weight:600;margin-bottom:0.3rem}
-.pub-item p{font-size:0.82rem;color:var(--text3)}
+/* ---------- publications ---------- */
+.pub{border-left:2px solid var(--line);padding:2px 0 2px 18px;margin-bottom:22px}
+.pub:hover{border-left-color:var(--violet)}
+.pub .t{font-weight:600;font-size:15px;margin-bottom:3px}
+.pub .v{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
 
-/* Contact */
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-top:2rem}
-.contact-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:1.5rem;text-align:center;transition:var(--transition)}
-.contact-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.contact-card .icon{font-size:1.5rem;margin-bottom:0.5rem}
-.contact-card h4{font-size:0.9rem;font-weight:600;margin-bottom:0.3rem}
-.contact-card p{font-size:0.82rem;color:var(--text2)}
+/* ---------- contact ---------- */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px}
+.cc{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:19px;transition:.18s}
+.cc:hover{border-color:var(--blue);text-decoration:none;transform:translateY(-2px)}
+.cc .k{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.cc .v{color:var(--ink);font-weight:600;font-size:14.5px;word-break:break-word}
 
-/* Footer */
-footer{text-align:center;padding:2rem;border-top:1px solid var(--card-border);font-size:0.82rem;color:var(--text3)}
+footer{border-top:1px solid var(--line);padding:30px 0 42px;color:var(--ink-3);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.mono{font-family:var(--mono)}
 
-/* Animations */
-.fade-in{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease}
-.fade-in.visible{opacity:1;transform:translateY(0)}
-
-/* Responsive */
-@media(max-width:768px){
-  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(10,10,15,0.95);padding:1.5rem 2rem;gap:1rem;border-bottom:1px solid var(--card-border)}
-  .nav-links.active{display:flex}
-  .hamburger{display:flex}
-  .hero h1{font-size:2.2rem}
-  .hero-stats{gap:1.5rem}
-  .about-grid{grid-template-columns:1fr}
-  .skills-grid{grid-template-columns:1fr}
-  .projects-grid{grid-template-columns:1fr}
-  .timeline-header{flex-direction:column}
-  section{padding:3rem 1.2rem}
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  .dot{animation:none}
+  html{scroll-behavior:auto}
 }
 </style>
 </head>
 <body>
 
-<!-- Nav -->
 <nav>
-  <div class="nav-inner">
-    <div class="nav-logo">RT</div>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#publications">Publications</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+  <div class="wrap">
+    <div class="brand">rohit<span>.</span>thakur</div>
+    <div class="navlinks">
+      <a href="#work">Work</a>
+      <a href="#projects">Projects</a>
+      <a href="#stack">Stack</a>
+      <a href="#research">Research</a>
+      <a href="#contact">Contact</a>
+    </div>
   </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-content fade-in">
-    <div class="hero-badge">AI/ML Engineer &bull; Seoul, South Korea</div>
-    <h1>Hi, I'm <span class="gradient">Rohit Thakur</span></h1>
-    <p class="hero-subtitle">I build production-grade AI systems&mdash;from LLM-powered agents and real-time computer vision to scalable manufacturing analytics platforms serving global enterprises.</p>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-number">8+</div><div class="stat-label">Years Experience</div></div>
-      <div class="stat"><div class="stat-number">15+</div><div class="stat-label">Production Systems</div></div>
-      <div class="stat"><div class="stat-number">3</div><div class="stat-label">Publications</div></div>
-      <div class="stat"><div class="stat-number">210+</div><div class="stat-label">ML Tests Built</div></div>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span>Open to AI/ML roles &middot; Seoul, South Korea</div>
+    <h1>Rohit Thakur<br><span class="grad">AI that knows what it doesn't know.</span></h1>
+    <p class="tagline">
+      AI/ML engineer, <b>8+ years</b> shipping production systems. I build
+      <b>agentic LLM applications</b> with real evaluation behind them,
+      <b>real-time computer vision</b> tuned to run on edge silicon, and the
+      manufacturing analytics that connect the two. Most of my recent work is
+      about a single question: <b>when should a model be trusted?</b>
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#projects">See the work</a>
+      <a class="btn" href="Rohit_Thakur_Resume.pdf" download>Download résumé</a>
+      <a class="btn" href="https://github.com/trohit920">GitHub</a>
     </div>
-    <div class="hero-buttons">
-      <a href="https://github.com/trohit920" class="btn btn-primary" target="_blank" rel="noopener">GitHub Profile</a>
-      <a href="#contact" class="btn btn-outline">Get in Touch</a>
-    </div>
-  </div>
-</section>
 
-<!-- About -->
-<section id="about">
-  <div class="section-inner fade-in">
-    <div class="section-label">About Me</div>
-    <div class="about-grid">
-      <div class="about-text">
-        <h2 class="section-title">Engineering AI for the Real World</h2>
-        <p>I'm an AI/ML Engineer specializing in building intelligent systems that solve complex manufacturing and industrial challenges. My work spans the full AI stack&mdash;from designing LLM-powered conversational agents and predictive ML pipelines to deploying real-time computer vision systems on edge devices.</p>
-        <p>Currently at <strong>eMoldino</strong>, I architect a manufacturing intelligence ecosystem integrating AWS Bedrock, Snowflake, and FastAPI that serves global clients like PACCAR, Jaguar, and Eaton. Previously, I led an AI engineering team at OpenSysNet and developed ADAS/DMS systems at Pittasoft.</p>
-        <p>I hold an M.S. from GIST (South Korea) with a specialization in AI/ML, and I'm passionate about bridging research and production to deliver measurable business impact.</p>
-      </div>
-      <div class="about-highlights">
-        <div class="highlight-card"><div class="highlight-icon blue">&#x1F916;</div><div class="highlight-info"><h4>LLM Agent Architecture</h4><p>Production agents with LangGraph, Bedrock, MCP</p></div></div>
-        <div class="highlight-card"><div class="highlight-icon purple">&#x1F441;</div><div class="highlight-info"><h4>Computer Vision</h4><p>ADAS, DMS, industrial detection at 99.5% mAP</p></div></div>
-        <div class="highlight-card"><div class="highlight-icon violet">&#x1F4CA;</div><div class="highlight-info"><h4>Manufacturing Analytics</h4><p>Capacity, downtime, scrap prediction pipelines</p></div></div>
-        <div class="highlight-card"><div class="highlight-icon green">&#x1F3AF;</div><div class="highlight-info"><h4>MLOps & Deployment</h4><p>Docker, K8s, MLFlow, CI/CD, Langfuse</p></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Skills -->
-<section id="skills" style="background:var(--bg2)">
-  <div class="section-inner fade-in">
-    <div class="section-label">Technical Skills</div>
-    <h2 class="section-title">Tools & Technologies</h2>
-    <p class="section-desc">A comprehensive stack built across 8+ years of production AI development.</p>
-    <div class="skills-grid">
-      <div class="skill-category">
-        <h3>&#x1F4BB; Programming</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">Python</span><span class="skill-tag">C++</span><span class="skill-tag">SQL</span><span class="skill-tag">R</span><span class="skill-tag">Java</span><span class="skill-tag">JavaScript</span>
-        </div>
-      </div>
-      <div class="skill-category">
-        <h3>&#x1F9E0; AI/ML Frameworks</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">TensorFlow</span><span class="skill-tag">PyTorch</span><span class="skill-tag">Keras</span><span class="skill-tag">scikit-learn</span><span class="skill-tag">LangChain</span><span class="skill-tag">LangGraph</span><span class="skill-tag">DeepEval</span>
-        </div>
-      </div>
-      <div class="skill-category">
-        <h3>&#x1F440; Computer Vision</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">OpenCV</span><span class="skill-tag">ONNX</span><span class="skill-tag">MediaPipe</span><span class="skill-tag">YOLOv5/v8</span><span class="skill-tag">U-Net</span><span class="skill-tag">FFmpeg</span>
-        </div>
-      </div>
-      <div class="skill-category">
-        <h3>&#x2728; LLM & GenAI</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">AWS Bedrock</span><span class="skill-tag">Claude 3.7</span><span class="skill-tag">GPT-4o</span><span class="skill-tag">RAG</span><span class="skill-tag">MCP Protocol</span><span class="skill-tag">Prompt Engineering</span>
-        </div>
-      </div>
-      <div class="skill-category">
-        <h3>&#x2601; Data & Cloud</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">Snowflake</span><span class="skill-tag">Snowpark</span><span class="skill-tag">Pandas</span><span class="skill-tag">NumPy</span><span class="skill-tag">SciPy</span><span class="skill-tag">Spark</span><span class="skill-tag">Kafka</span><span class="skill-tag">Azure ML</span><span class="skill-tag">Databricks</span>
-        </div>
-      </div>
-      <div class="skill-category">
-        <h3>&#x1F6E0; MLOps & DevOps</h3>
-        <div class="skill-tags">
-          <span class="skill-tag">Docker</span><span class="skill-tag">Kubernetes</span><span class="skill-tag">MLFlow</span><span class="skill-tag">Git</span><span class="skill-tag">CI/CD</span><span class="skill-tag">Langfuse</span><span class="skill-tag">FastAPI</span><span class="skill-tag">Streamlit</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Experience -->
-<section id="experience">
-  <div class="section-inner fade-in">
-    <div class="section-label">Experience</div>
-    <h2 class="section-title">Career Journey</h2>
-    <p class="section-desc">Building AI solutions across manufacturing, automotive, and IoT domains.</p>
-    <div class="timeline">
-
-      <!-- eMoldino -->
-      <div class="timeline-item current">
-        <div class="timeline-header">
-          <div>
-            <div class="timeline-title">AI-ML Engineer</div>
-            <div class="timeline-company">eMoldino</div>
-            <div class="timeline-meta">Seoul, South Korea</div>
+    <div class="panel" id="uqpanel">
+      <div class="panel-head">
+        <div class="panel-title">live &middot; token-level uncertainty trace</div>
+        <div class="readouts">
+          <div class="readout">confidence
+            <b id="rConf">0.94</b>
+            <span class="meter"><i id="mConf" style="width:94%;background:var(--aqua)"></i></span>
           </div>
-          <span class="timeline-dates">Apr 2025 &ndash; Present</span>
-        </div>
-        <div class="timeline-summary">Spearheaded the design and delivery of eMoldino's AI analytics platform for B2B injection molding manufacturing, building 15+ production-grade systems spanning LLM-powered agents, predictive ML pipelines, real-time IoT analytics, and automated reporting tools. Architected a full-stack manufacturing intelligence ecosystem integrating AWS Bedrock, Snowflake, and FastAPI serving multiple global clients (PACCAR, Jaguar, Eaton).</div>
-        <ul class="timeline-bullets">
-          <li>Built a Production Insight LLM Agent using AWS Bedrock (Claude 3.7 Sonnet), LangGraph, and Snowflake with intent-driven routing and a React frontend with real-time streaming</li>
-          <li>Developed AI-Powered Cycle Time Deviation Analysis with adaptive window algorithms (30-90 day) and statistical significance testing (Mann-Whitney U, Chi-square)</li>
-          <li>Deployed Scrap Rate Prediction pipeline improving test MAE by 33% (16.3% &rarr; 10.9%)</li>
-          <li>Engineered Manufacturing MCP Server (v3.1) with 4 core analytics tools via FastAPI with async job queues and multi-user session support</li>
-          <li>Created Combined Tooling Report Agent for executive summaries and actionable recommendations using LangChain and AWS Bedrock</li>
-          <li>Built LLM Evaluation Framework with 210+ tests, LLM-as-Judge and DeepEval metrics across 4 manufacturing modules</li>
-          <li>Designed Capacity Risk Analysis with Physics-of-Loss methodology, rolling risk scores, and OLS-based burn-up forecasting with Langfuse tracing</li>
-          <li>Developed Downtime Detection system extracting 11+ engineered features per event with automated Snowflake upload</li>
-          <li>Built acceleration sensor pipelines with RMS/Crest Factor metrics and KS testing for anomaly detection</li>
-        </ul>
-      </div>
-
-      <!-- OpenSysNet -->
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div>
-            <div class="timeline-title">AI Engineering Manager</div>
-            <div class="timeline-company">OpenSysNet Co., Ltd.</div>
-            <div class="timeline-meta">Pangyo, Seoul, South Korea</div>
+          <div class="readout">entropy
+            <b id="rEnt">0.21</b>
+            <span class="meter"><i id="mEnt" style="width:21%;background:var(--orange)"></i></span>
           </div>
-          <span class="timeline-dates">May 2022 &ndash; Apr 2025</span>
         </div>
-        <ul class="timeline-bullets">
-          <li>Led and mentored a team of 5 AI engineers, implementing SAFe Agile to improve delivery</li>
-          <li>Pantograph Monitoring System: real-time railway fault detection at 95.5% accuracy using YOLOv8 and edge processing</li>
-          <li>Sorting Robot Vision System: 99.5% mAP@50 object detection, improving manufacturing efficiency by 20%</li>
-          <li>LSTM and Gradient Boosting models for energy consumption optimization achieving 12.3% energy savings</li>
-          <li>Computer vision applications: golf swing analysis, face/fire/hand detection, drone OCR</li>
+      </div>
+      <canvas id="uq" aria-label="Animated chart of a language model's per-token entropy, spiking where the model is unsure"></canvas>
+      <div class="panel-foot" id="uqfoot">generating&hellip;</div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="n" style="color:var(--blue)">8+</div><div class="l">years in production AI</div></div>
+      <div class="metric"><div class="n" style="color:var(--aqua)">33%</div><div class="l">lower prediction error</div></div>
+      <div class="metric"><div class="n" style="color:var(--violet)">95.5%</div><div class="l">fault-detection accuracy</div></div>
+      <div class="metric"><div class="n" style="color:var(--yellow)">99.5%</div><div class="l">mAP@50, robot vision</div></div>
+      <div class="metric"><div class="n" style="color:var(--orange)">20%</div><div class="l">manufacturing efficiency gain</div></div>
+      <div class="metric"><div class="n" style="color:#d55181">12.3%</div><div class="l">energy saved, anomaly control</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-num">01 — EXPERIENCE</div>
+      <h2>Career</h2>
+      <p class="sec-sub">Three companies, one throughline: taking models out of notebooks and making them survive contact with production.</p>
+    </div>
+
+    <div class="tl">
+      <div class="tl-item reveal">
+        <p class="tl-role">AI/ML Engineer &middot; <span class="tl-co">eMoldino</span></p>
+        <div class="tl-when">APR 2025 — PRESENT &middot; SEOUL, SOUTH KOREA</div>
+        <ul>
+          <li>Built a <b>Production Insight LLM agent</b> (AWS Bedrock Claude, LangGraph, Snowflake) with intent-driven routing and real-time streaming into a React frontend.</li>
+          <li>Designed a <b>Manufacturing MCP Server</b> exposing four analytics tools — ROI, RunRate, Capacity, CT Efficiency — over FastAPI with async job queues and multi-user sessions.</li>
+          <li>Shipped an <b>LLM evaluation suite</b>: 210+ tests across four modules using LLM-as-Judge and DeepEval (faithfulness, hallucination, answer relevancy) over six scored criteria, tracked in Snowflake.</li>
+          <li>Built cycle-time deviation detection with adaptive windows and Mann-Whitney U / Chi-square testing, plus a capacity-risk dashboard using Physics-of-Loss methodology and OLS forecasting.</li>
+          <li>Deployed a scrap-rate prediction pipeline that cut test MAE by <b>33%</b>, from 16.3% to 10.9%.</li>
         </ul>
+        <div class="tags">
+          <span class="tag">LangGraph</span><span class="tag">AWS Bedrock</span><span class="tag">Snowflake</span>
+          <span class="tag">MCP</span><span class="tag">FastAPI</span><span class="tag">DeepEval</span><span class="tag">Langfuse</span>
+        </div>
       </div>
 
-      <!-- Pittasoft -->
-      <div class="timeline-item">
-        <div class="timeline-header">
-          <div>
-            <div class="timeline-title">Research & Development Engineer</div>
-            <div class="timeline-company">Pittasoft Co., Ltd.</div>
-            <div class="timeline-meta">Seoul, South Korea</div>
+      <div class="tl-item past reveal">
+        <p class="tl-role">AI Engineering Manager &middot; <span class="tl-co">OpenSysNet</span></p>
+        <div class="tl-when">MAY 2022 — APR 2025 &middot; PANGYO, SOUTH KOREA</div>
+        <ul>
+          <li>Ran AI delivery under <b>SAFe</b>, improving sprint velocity and release consistency across the team.</li>
+          <li>Built real-time <b>railway pantograph monitoring</b> with YOLOv8 and edge processing at <b>95.5%</b> fault-detection accuracy — awarded an Innovation Award.</li>
+          <li>Designed a sorting-robot vision pipeline at <b>99.5% mAP@50</b>, raising manufacturing efficiency by <b>20%</b>.</li>
+          <li>Built LSTM and gradient-boosting models for fan-speed control and energy-anomaly detection, saving <b>12.3%</b> in energy.</li>
+          <li>Delivered CV applications for golf-swing analysis, face/fire/hand detection, and OCR from drone video.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">YOLOv8</span><span class="tag">Edge AI</span><span class="tag">LSTM</span>
+          <span class="tag">SAFe</span><span class="tag">TensorRT</span><span class="tag">Team leadership</span>
+        </div>
+      </div>
+
+      <div class="tl-item past reveal">
+        <p class="tl-role">AI Research &amp; Development Engineer &middot; <span class="tl-co">Pittasoft</span></p>
+        <div class="tl-when">SEP 2017 — APR 2022 &middot; SEOUL, SOUTH KOREA</div>
+        <ul>
+          <li>Led <b>ADAS</b> development for dashcam products: forward vehicle detection, traffic-light recognition, and Forward Vehicle Start Alarm.</li>
+          <li>Built a <b>Driver Monitoring System</b>, training YOLO models to detect distraction and drowsiness.</li>
+          <li>Applied a VGG-based <b>U-Net</b> to medical image segmentation with optimized real-time inference.</li>
+          <li>Built end-to-end video pipelines (OpenCV, FFmpeg) for streaming, enhancement, and feature matching.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">OpenCV</span><span class="tag">ADAS</span><span class="tag">DMS</span>
+          <span class="tag">U-Net</span><span class="tag">TensorFlow</span><span class="tag">FFmpeg</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-num">02 — PROJECTS</div>
+      <h2>Selected work</h2>
+      <p class="sec-sub">Independent builds, each one taken far enough to produce measurements rather than a demo.</p>
+    </div>
+
+    <div class="grid g2">
+      <article class="card reveal">
+        <span class="accent-l" style="background:var(--blue)"></span>
+        <h3>Uncertainty Quantification for LLMs</h3>
+        <div class="meta">PYTORCH &middot; HUGGING FACE &middot; OPEN SOURCE</div>
+        <p>Token- and sentence-level uncertainty for a local Qwen2.5-1.5B: predictive entropy, perplexity, max-softmax, and semantic entropy via NLI meaning-clustering — benchmarked on factual QA and math.</p>
+        <ul>
+          <li>Error-detection AUROC, ECE with reliability diagrams, risk-coverage curves, bootstrap CIs — all hand-implemented and unit-tested.</li>
+          <li>Found a <b>free single forward pass beat 10-sample semantic entropy</b> (0.945 vs 0.900 AUROC), and traced why: question-conditioned NLI collapses on comparative questions.</li>
+          <li>Uncertainty-gated cascade recovered 80% of self-consistency's accuracy gain at 71% of the compute.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">Semantic entropy</span><span class="tag">Calibration</span>
+          <span class="tag">AUROC</span><span class="tag">NLI</span><span class="tag">Qwen2.5</span>
+        </div>
+        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/llm-uncertainty-quantification">View source →</a></p>
+      </article>
+
+      <article class="card reveal">
+        <span class="accent-l" style="background:var(--aqua)"></span>
+        <h3>CabinSense — In-Cabin Driver &amp; Occupant Monitoring</h3>
+        <div class="meta">ONNX RUNTIME &middot; MOBILENETV3 &middot; EDGE / SoC</div>
+        <p>Real-time DMS/OMS inferring drowsiness, distraction, gaze zone, yawning, phone use, smoking, seatbelt, glasses, cap, and occupant count from a single camera feed.</p>
+        <ul>
+          <li>Fuses ONNX face detection, 98-point facial landmarks, head-pose geometry (EAR/MAR/PERCLOS), and a trained multi-task classifier.</li>
+          <li>Built for edge deployment: INT8 quantization, model manifest, temporal-stability fusion, and a documented C/C++ portability path.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">Multi-task learning</span><span class="tag">INT8</span>
+          <span class="tag">Head pose</span><span class="tag">MLflow</span><span class="tag">PERCLOS</span>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <span class="accent-l" style="background:var(--violet)"></span>
+        <h3>Agentic RAG with Guardrails</h3>
+        <div class="meta">LANGGRAPH &middot; FASTAPI &middot; FULLY LOCAL</div>
+        <p>A local agentic RAG assistant over enterprise documents, built so that every claim it makes can be checked against a source.</p>
+        <ul>
+          <li>Hybrid retrieval (dense + BM25), NLI-based hallucination and groundedness guardrails, prompt-injection defense, document-level access control.</li>
+          <li>Judge-free retrieval and answer-quality harness — hit@k, MRR, nDCG, NLI faithfulness — plus a two-model accuracy/latency/cost comparison.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">Hybrid retrieval</span><span class="tag">Guardrails</span>
+          <span class="tag">nDCG</span><span class="tag">Prompt injection</span><span class="tag">BM25</span>
+        </div>
+      </article>
+
+      <article class="card reveal">
+        <span class="accent-l" style="background:var(--orange)"></span>
+        <h3>Railway Pantograph Monitoring</h3>
+        <div class="meta">YOLOV8 &middot; EDGE INFERENCE &middot; INNOVATION AWARD</div>
+        <p>Real-time monitoring of train pantographs, catching arcing and contact-point misalignment before they become failures.</p>
+        <ul>
+          <li>YOLOv8 detection of pantograph and ROI at <b>99.5% mAP@50</b>, with custom arcing-detection and contact-point tracking algorithms.</li>
+          <li>Transfer learning plus edge optimization for real-time throughput on constrained hardware.</li>
+          <li>Improved railway safety through early fault detection and cut maintenance cost via proactive identification.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">YOLOv8</span><span class="tag">Real-time</span>
+          <span class="tag">Transfer learning</span><span class="tag">Anomaly detection</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-num">03 — STACK</div>
+      <h2>Tools I reach for</h2>
+      <p class="sec-sub">Grouped by what I actually use them to build, not by popularity.</p>
+    </div>
+
+    <div class="grid g3">
+      <div class="skill reveal">
+        <h4>Generative AI &amp; LLM</h4>
+        <div class="tags">
+          <span class="tag">Agentic RAG</span><span class="tag">LangGraph</span><span class="tag">LangChain</span>
+          <span class="tag">Hybrid retrieval</span><span class="tag">Chroma</span><span class="tag">FAISS</span>
+          <span class="tag">MCP</span><span class="tag">LLM-as-Judge</span><span class="tag">DeepEval</span>
+          <span class="tag">Uncertainty &amp; calibration</span><span class="tag">Guardrails</span>
+          <span class="tag">AWS Bedrock</span><span class="tag">GPT-4o</span><span class="tag">Transformers</span>
+        </div>
+      </div>
+      <div class="skill reveal">
+        <h4>Computer Vision</h4>
+        <div class="tags">
+          <span class="tag">OpenCV</span><span class="tag">YOLOv5/v8</span><span class="tag">U-Net</span>
+          <span class="tag">Object detection</span><span class="tag">Facial landmarks</span>
+          <span class="tag">Head-pose</span><span class="tag">Segmentation</span>
+          <span class="tag">DMS/OMS/ADAS</span><span class="tag">MediaPipe</span>
+        </div>
+      </div>
+      <div class="skill reveal">
+        <h4>Deep Learning &amp; Edge</h4>
+        <div class="tags">
+          <span class="tag">PyTorch</span><span class="tag">TensorFlow</span><span class="tag">Keras</span>
+          <span class="tag">scikit-learn</span><span class="tag">ONNX</span><span class="tag">ONNX Runtime</span>
+          <span class="tag">INT8 quantization</span><span class="tag">Pruning</span>
+          <span class="tag">TensorRT</span><span class="tag">Multi-task learning</span>
+        </div>
+      </div>
+      <div class="skill reveal">
+        <h4>Data &amp; Cloud</h4>
+        <div class="tags">
+          <span class="tag">Snowflake</span><span class="tag">Snowpark</span><span class="tag">Pandas</span>
+          <span class="tag">NumPy</span><span class="tag">SciPy</span><span class="tag">Spark</span>
+          <span class="tag">Kafka</span><span class="tag">Hadoop</span><span class="tag">Azure ML</span><span class="tag">Databricks</span>
+        </div>
+      </div>
+      <div class="skill reveal">
+        <h4>MLOps &amp; DevOps</h4>
+        <div class="tags">
+          <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">MLflow</span>
+          <span class="tag">Weights &amp; Biases</span><span class="tag">Git</span><span class="tag">CI/CD</span>
+          <span class="tag">FastAPI</span><span class="tag">Langfuse</span><span class="tag">Streamlit</span>
+        </div>
+      </div>
+      <div class="skill reveal">
+        <h4>Languages &amp; Viz</h4>
+        <div class="tags">
+          <span class="tag">Python</span><span class="tag">C++</span><span class="tag">SQL</span>
+          <span class="tag">R</span><span class="tag">Java</span><span class="tag">Plotly</span>
+          <span class="tag">Matplotlib</span><span class="tag">Altair</span><span class="tag">React</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-num">04 — RESEARCH &amp; RECOGNITION</div>
+      <h2>Publications &amp; awards</h2>
+    </div>
+
+    <div class="grid g2">
+      <div class="reveal">
+        <div class="pub">
+          <div class="t">Energy Consumption Prediction Using LSTM Models</div>
+          <div class="v">ICMLA — Intl. Conference on Machine Learning and Applications</div>
+        </div>
+        <div class="pub">
+          <div class="t">Concurrent Food Localization and Recognition</div>
+          <div class="v">KICS — Korean Institute of Communications and Information Sciences, 2017</div>
+        </div>
+        <div class="pub">
+          <div class="t">Augmentation of RGB Dataset for Improved Performance on Infrared Classifier</div>
+          <div class="v">Electronics and Information Communications Conference, 2016</div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="card" style="margin-bottom:16px">
+          <h3>Recognition</h3>
+          <ul style="margin-bottom:0">
+            <li><b>Innovation Award</b> — OpenSysNet, for the pantograph monitoring system (95.5% fault-detection accuracy).</li>
+            <li><b>Employee of the Year</b> — Pittasoft, for ADAS and driver-monitoring work.</li>
+            <li><b>IEEE member</b>, active in AI/ML and computer-vision communities.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Education</h3>
+          <ul style="margin-bottom:0">
+            <li><b>M.S., Electrical Engineering &amp; Computer Science</b> — Gwangju Institute of Science and Technology (GIST), 2017. Specialization: AI and machine learning.</li>
+            <li><b>B.Tech., Electronics &amp; Communication Engineering</b> — Green Hills Engineering College, India, 2014.</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>Languages</h3>
+          <div class="tags">
+            <span class="tag">English — fluent</span>
+            <span class="tag">Korean — professional working</span>
+            <span class="tag">Hindi — native</span>
           </div>
-          <span class="timeline-dates">Sep 2017 &ndash; Apr 2022</span>
         </div>
-        <ul class="timeline-bullets">
-          <li>Led ADAS development: forward vehicle detection, traffic light recognition, Forward Vehicle Start Alarm</li>
-          <li>Trained TensorFlow YOLO models for Driver Monitoring System (DMS) for distraction and drowsiness detection</li>
-          <li>Applied VGG-based U-Net for high-accuracy medical image segmentation</li>
-          <li>Built end-to-end video processing pipelines using OpenCV and FFmpeg for real-time streams</li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- Projects -->
-<section id="projects" style="background:var(--bg2)">
-  <div class="section-inner fade-in">
-    <div class="section-label">Key Projects</div>
-    <h2 class="section-title">What I've Built</h2>
-    <p class="section-desc">Highlights from my manufacturing AI and computer vision work.</p>
-    <div class="projects-grid">
-
-      <div class="project-card">
-        <h3>Production Insight LLM Agent</h3>
-        <div class="project-metric">v1.8 &bull; Full-Stack</div>
-        <p>Collaborative LLM agent for manufacturing IoT data with intent-driven routing, hierarchical graph workflows, knowledge graph integration, and real-time streaming React frontend.</p>
-        <div class="project-tech"><span>AWS Bedrock</span><span>LangGraph</span><span>FastAPI</span><span>React</span><span>Snowflake</span><span>MCP</span></div>
-      </div>
-
-      <div class="project-card">
-        <h3>Manufacturing MCP Server</h3>
-        <div class="project-metric">v3.1 &bull; 4 Analytics Tools</div>
-        <p>B2B analytics server providing ROI Analysis, RunRate, Capacity Planning, and CT Efficiency via MCP protocol with async job queue, SQLite persistence, and rate limiting.</p>
-        <div class="project-tech"><span>FastAPI</span><span>Snowpark</span><span>SQLAlchemy</span><span>Bedrock</span><span>Pydantic</span></div>
-      </div>
-
-      <div class="project-card">
-        <h3>LLM Evaluation Framework</h3>
-        <div class="project-metric">210+ Tests &bull; 4 Modules</div>
-        <p>End-to-end evaluation pipeline comparing prompt variants with LLM-as-Judge scoring (6 criteria) and DeepEval metrics (Faithfulness, Hallucination, Answer Relevancy).</p>
-        <div class="project-tech"><span>DeepEval</span><span>Claude</span><span>GPT-4o</span><span>Snowflake</span><span>pytest</span></div>
-      </div>
-
-      <div class="project-card">
-        <h3>Capacity Risk Analysis</h3>
-        <div class="project-metric">Physics-of-Loss &bull; AI Insights</div>
-        <p>Interactive dashboard with rolling risk scores, waterfall analysis, OLS forecasting, and Bedrock-powered AI insights with Langfuse observability tracing.</p>
-        <div class="project-tech"><span>Streamlit</span><span>Plotly</span><span>Bedrock</span><span>Langfuse</span><span>Snowflake</span></div>
-      </div>
-
-      <div class="project-card">
-        <h3>Pantograph Monitoring System</h3>
-        <div class="project-metric">95.5% Accuracy &bull; Award Winner</div>
-        <p>Real-time railway pantograph fault detection system using YOLOv8 with edge processing for live video streams. Won Innovation Award at OpenSysNet.</p>
-        <div class="project-tech"><span>YOLOv8</span><span>OpenCV</span><span>Edge AI</span><span>Python</span></div>
-      </div>
-
-      <div class="project-card">
-        <h3>Sorting Robot Vision</h3>
-        <div class="project-metric">99.5% mAP@50 &bull; +20% Efficiency</div>
-        <p>AI object detection system for industrial sorting robots that improved manufacturing efficiency by 20% with near-perfect detection accuracy.</p>
-        <div class="project-tech"><span>YOLO</span><span>OpenCV</span><span>ONNX</span><span>Python</span></div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- Publications -->
-<section id="publications">
-  <div class="section-inner fade-in">
-    <div class="section-label">Research</div>
-    <h2 class="section-title">Publications</h2>
-    <div class="pub-list">
-      <div class="pub-item">
-        <h4>Energy Consumption Prediction Using LSTM Models</h4>
-        <p>International Conference on Machine Learning and Applications (ICMLA)</p>
-      </div>
-      <div class="pub-item">
-        <h4>Concurrent Food Localization and Recognition</h4>
-        <p>Korean Institute of Communications and Information Sciences (KICS), 2017</p>
-      </div>
-      <div class="pub-item">
-        <h4>Augmentation of RGB Dataset for Improved Performance on Infrared Classifier</h4>
-        <p>Electronics and Information Communications Conference, 2016</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Education -->
-<section style="background:var(--bg2)">
-  <div class="section-inner fade-in">
-    <div class="section-label">Education</div>
-    <h2 class="section-title">Academic Background</h2>
-    <div class="projects-grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-      <div class="project-card">
-        <h3>M.S. in Electrical Engineering & Computer Science</h3>
-        <p>Gwangju Institute of Science and Technology (GIST), South Korea &bull; 2017<br>Specialization: Artificial Intelligence and Machine Learning</p>
-      </div>
-      <div class="project-card">
-        <h3>B.Tech. in Electronics & Communication Engineering</h3>
-        <p>Green Hills Engineering College, India &bull; 2014</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Contact -->
 <section id="contact">
-  <div class="section-inner fade-in">
-    <div class="section-label">Get in Touch</div>
-    <h2 class="section-title">Let's Connect</h2>
-    <p class="section-desc">Open to collaborations, consulting, and new opportunities in AI/ML.</p>
-    <div class="contact-grid">
-      <a href="mailto:trohit920@gmail.com" class="contact-card">
-        <div class="icon">&#x2709;</div>
-        <h4>Email</h4>
-        <p>trohit920@gmail.com</p>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-num">05 — CONTACT</div>
+      <h2>Let's build something</h2>
+      <p class="sec-sub">Open to AI/ML engineering roles — agentic LLM systems, evaluation and reliability, or real-time vision. Based in Seoul, open to relocation.</p>
+    </div>
+    <div class="contact-grid reveal">
+      <a class="cc" href="mailto:trohit920@gmail.com">
+        <div class="k">Email</div><div class="v">trohit920@gmail.com</div>
       </a>
-      <a href="https://github.com/trohit920" target="_blank" rel="noopener" class="contact-card">
-        <div class="icon">&#x1F4BB;</div>
-        <h4>GitHub</h4>
-        <p>trohit920</p>
+      <a class="cc" href="tel:+821020515650">
+        <div class="k">Phone</div><div class="v">+82 10-2051-5650</div>
       </a>
-      <a href="tel:+821020515650" class="contact-card">
-        <div class="icon">&#x1F4F1;</div>
-        <h4>Phone</h4>
-        <p>+82-10-2051-5650</p>
+      <a class="cc" href="https://github.com/trohit920">
+        <div class="k">GitHub</div><div class="v">@trohit920</div>
       </a>
-      <div class="contact-card">
-        <div class="icon">&#x1F30F;</div>
-        <h4>Location</h4>
-        <p>Seoul, South Korea</p>
-      </div>
+      <a class="cc" href="Rohit_Thakur_Resume.pdf" download>
+        <div class="k">Résumé</div><div class="v">Download PDF ↓</div>
+      </a>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>&copy; 2026 Rohit Thakur. Built with passion for AI.</p>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
 </footer>
 
 <script>
-// Hamburger
-document.getElementById('hamburger').addEventListener('click',()=>{
-  document.getElementById('navLinks').classList.toggle('active');
-});
-document.querySelectorAll('.nav-links a').forEach(a=>{
-  a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('active'));
-});
+(function () {
+  "use strict";
 
-// Fade-in on scroll
-const observer=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
-},{threshold:0.1});
-document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
+  // ---- scroll reveal ----------------------------------------------------
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var revealables = document.querySelectorAll(".reveal");
+  if (reduced || !("IntersectionObserver" in window)) {
+    revealables.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    revealables.forEach(function (el) { io.observe(el); });
+  }
 
-// Smooth nav background
-let lastScroll=0;
-window.addEventListener('scroll',()=>{
-  const nav=document.querySelector('nav');
-  nav.style.boxShadow=window.scrollY>50?'0 4px 30px rgba(0,0,0,0.3)':'none';
-});
+  // ---- live uncertainty trace -------------------------------------------
+  // A stylised token-by-token entropy trace: low and flat while the model is
+  // on familiar ground, spiking where it starts guessing. Same shape the
+  // uncertainty project produces, rendered as an animated sparkline.
+  var canvas = document.getElementById("uq");
+  var foot = document.getElementById("uqfoot");
+  var readConf = document.getElementById("rConf");
+  var readEnt = document.getElementById("rEnt");
+  var meterConf = document.getElementById("mConf");
+  var meterEnt = document.getElementById("mEnt");
+  if (!canvas || !canvas.getContext) { return; }
+
+  var ctx = canvas.getContext("2d");
+  var WINDOW = 120;
+  var values = [];
+  var phrases = [
+    { text: "The capital of France is Paris.", spike: 0.10 },
+    { text: "The 14th element on the periodic table is silicon.", spike: 0.34 },
+    { text: "Their quarterly revenue was approximately —", spike: 0.93 },
+    { text: "The patient's dosage should be —", spike: 0.97 },
+    { text: "2 + 2 equals 4.", spike: 0.06 },
+    { text: "The population of that city in 1911 was —", spike: 0.89 }
+  ];
+  var phraseIndex = 0;
+  var charIndex = 0;
+  var tick = 0;
+  var confidence = 0.94;
+  var entropy = 0.21;
+
+  function resize() {
+    var ratio = window.devicePixelRatio || 1;
+    var rect = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+    canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  function nextValue() {
+    var phrase = phrases[phraseIndex];
+    var progress = charIndex / Math.max(1, phrase.text.length);
+    // Uncertainty climbs toward the end of an unanswerable phrase.
+    var base = 0.06 + phrase.spike * Math.pow(progress, 2.2);
+    var jitter = (Math.sin(tick * 0.7) + Math.sin(tick * 1.9)) * 0.022;
+    return Math.min(1, Math.max(0.02, base + jitter));
+  }
+
+  function draw() {
+    var rect = canvas.getBoundingClientRect();
+    var w = rect.width;
+    var h = rect.height;
+    ctx.clearRect(0, 0, w, h);
+
+    // baseline grid
+    ctx.strokeStyle = "rgba(255,255,255,.05)";
+    ctx.lineWidth = 1;
+    for (var g = 1; g < 4; g++) {
+      var gy = (h / 4) * g;
+      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+    }
+
+    if (values.length < 2) { return; }
+    var step = w / (WINDOW - 1);
+
+    // filled area
+    var gradient = ctx.createLinearGradient(0, 0, 0, h);
+    gradient.addColorStop(0, "rgba(217,89,38,.30)");
+    gradient.addColorStop(1, "rgba(217,89,38,0)");
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    for (var i = 0; i < values.length; i++) {
+      ctx.lineTo(i * step, h - values[i] * h * 0.86 - 6);
+    }
+    ctx.lineTo((values.length - 1) * step, h);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // trace
+    ctx.beginPath();
+    for (var j = 0; j < values.length; j++) {
+      var x = j * step;
+      var y = h - values[j] * h * 0.86 - 6;
+      if (j === 0) { ctx.moveTo(x, y); } else { ctx.lineTo(x, y); }
+    }
+    ctx.strokeStyle = "#d95926";
+    ctx.lineWidth = 2;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    // leading dot
+    var lastX = (values.length - 1) * step;
+    var lastY = h - values[values.length - 1] * h * 0.86 - 6;
+    ctx.beginPath();
+    ctx.arc(lastX, lastY, 3.4, 0, Math.PI * 2);
+    ctx.fillStyle = values[values.length - 1] > 0.55 ? "#e66767" : "#199e70";
+    ctx.fill();
+  }
+
+  function advance() {
+    tick += 1;
+    var phrase = phrases[phraseIndex];
+    charIndex += 1;
+
+    var value = nextValue();
+    values.push(value);
+    if (values.length > WINDOW) { values.shift(); }
+
+    entropy = entropy * 0.82 + value * 0.18;
+    confidence = 1 - entropy * 0.92;
+
+    readEnt.textContent = entropy.toFixed(2);
+    readConf.textContent = confidence.toFixed(2);
+    meterEnt.style.width = Math.round(entropy * 100) + "%";
+    meterConf.style.width = Math.round(confidence * 100) + "%";
+    meterConf.style.background = confidence > 0.6 ? "var(--aqua)" : "#e66767";
+
+    var shown = phrase.text.slice(0, charIndex);
+    var unsure = value > 0.55;
+    foot.textContent = shown + (unsure ? "  ▸ low confidence — abstain" : "█");
+    foot.style.color = unsure ? "#e66767" : "";
+
+    if (charIndex >= phrase.text.length + 14) {
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      charIndex = 0;
+    }
+    draw();
+  }
+
+  if (reduced) {
+    for (var k = 0; k < WINDOW; k++) {
+      values.push(0.08 + Math.abs(Math.sin(k / 9)) * 0.4);
+    }
+    draw();
+    foot.textContent = "token-level entropy — spikes where the model starts guessing";
+  } else {
+    var running = true;
+    var timer = setInterval(function () { if (running) { advance(); } }, 90);
+    document.addEventListener("visibilitychange", function () {
+      running = !document.hidden;
+    });
+    window.addEventListener("pagehide", function () { clearInterval(timer); });
+  }
+})();
 </script>
 </body>
 </html>
