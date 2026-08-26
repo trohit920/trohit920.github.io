@@ -337,30 +337,36 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <span class="accent-l" style="background:var(--aqua)"></span>
         <h3>CabinSense — In-Cabin Driver &amp; Occupant Monitoring</h3>
         <div class="meta">ONNX RUNTIME &middot; MOBILENETV3 &middot; EDGE / SoC</div>
-        <p>Real-time DMS/OMS inferring drowsiness, distraction, gaze zone, yawning, phone use, smoking, seatbelt, glasses, cap, and occupant count from a single camera feed.</p>
+        <p>Real-time DMS/OMS inferring eleven signals — drowsiness, distraction, gaze zone, yawning, phone use, drinking, smoking, seatbelt, glasses, cap, and occupant count — from a single camera feed.</p>
         <ul>
-          <li>Fuses ONNX face detection, 98-point facial landmarks, head-pose geometry (EAR/MAR/PERCLOS), and a trained multi-task classifier.</li>
-          <li>Built for edge deployment: INT8 quantization, model manifest, temporal-stability fusion, and a documented C/C++ portability path.</li>
+          <li>Fuses ONNX face detection, 98-point landmarks, 6DRepNet head pose, L2CS gaze, EAR/MAR/PERCLOS geometry, and localized YOLO detectors into one temporally-smoothed state.</li>
+          <li>Found the phone classifier firing at <b>p90 ≈ 0.99 on a clip containing no phone</b> — a whole-image head has no concept of absence. Moved object-like classes to localized detectors, keeping classifiers only for genuine face attributes and geometry for yawn.</li>
+          <li>Benchmarked the edge path and found <b>INT8 made the models 3.6× smaller but 6–10× slower</b> — dequantization overhead swamps a MobileNetV3's tiny convolutions. Shipped fp32 at <b>~7.4 ms per frame on CPU</b> (~135 FPS), with a documented path to when INT8 still wins.</li>
+          <li>Driver-ROI scheduling runs detectors on ~half the pixels (<b>141/145 frames ROI-only</b>) with periodic full-frame sweeps to recount occupants; one consolidated YOLOv8n covers three classes in a single inference to keep the SoC budget flat.</li>
         </ul>
         <div class="tags">
-          <span class="tag">Multi-task learning</span><span class="tag">INT8</span>
-          <span class="tag">Head pose</span><span class="tag">MLflow</span><span class="tag">PERCLOS</span>
+          <span class="tag">Object detection</span><span class="tag">INT8</span>
+          <span class="tag">Head pose &amp; gaze</span><span class="tag">Multi-task learning</span><span class="tag">PERCLOS</span>
         </div>
+        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/cabinsense">View source →</a></p>
       </article>
 
       <article class="card reveal">
         <span class="accent-l" style="background:var(--violet)"></span>
         <h3>Agentic RAG with Guardrails</h3>
         <div class="meta">LANGGRAPH &middot; FASTAPI &middot; FULLY LOCAL</div>
-        <p>A local agentic RAG assistant over enterprise documents, built so that every claim it makes can be checked against a source.</p>
+        <p>A local agentic RAG assistant over enterprise documents where refusing is a first-class outcome — and a harness that measures whether it refuses correctly.</p>
         <ul>
-          <li>Hybrid retrieval (dense + BM25), NLI-based hallucination and groundedness guardrails, prompt-injection defense, document-level access control.</li>
+          <li><b>Faithfulness 1.00</b>, <b>abstention accuracy 0.94</b>, and <b>zero ACL retrieval leaks</b> — clearance is enforced in the vector-store filter, so protected text never reaches the model.</li>
+          <li>Pure NLI over-abstained on valid paraphrases; an embedding-cosine rescue lifted abstention <b>0.69 → 0.94</b> with faithfulness held at 1.00. Sentence-level premises moved entailment on a grounded pair from 0.0003 to 0.988.</li>
+          <li>Hybrid retrieval (dense + BM25 via RRF), prompt-injection defense, and document-level access control.</li>
           <li>Judge-free retrieval and answer-quality harness — hit@k, MRR, nDCG, NLI faithfulness — plus a two-model accuracy/latency/cost comparison.</li>
         </ul>
         <div class="tags">
           <span class="tag">Hybrid retrieval</span><span class="tag">Guardrails</span>
           <span class="tag">nDCG</span><span class="tag">Prompt injection</span><span class="tag">BM25</span>
         </div>
+        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/agentic-rag-guardrails">View source →</a></p>
       </article>
 
       <article class="card reveal">
