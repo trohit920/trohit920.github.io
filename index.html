@@ -370,6 +370,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       </article>
 
       <article class="card reveal">
+        <span class="accent-l" style="background:var(--yellow)"></span>
+        <h3>StreamRec — Two-Stage Recommender &amp; Hybrid Search</h3>
+        <div class="meta">PYTORCH &middot; LIGHTGBM &middot; FASTAPI &middot; FULLY LOCAL</div>
+        <p>The streaming content-discovery stack end to end on MovieLens-1M — candidate generation, learning-to-rank, bandit re-ranking, cold start, and search — built to find out which stage the wins actually come from.</p>
+        <ul>
+          <li>Two-tower retrieval over an ANN index scores <b>2.3× the popularity baseline on NDCG@10</b> (0.018 → 0.042) and lifts catalogue coverage <b>0.08 → 0.74</b>. A logQ correction on the in-batch negatives — which otherwise punish popular items for being popular — more than doubled Recall@10 (0.033 → 0.085).</li>
+          <li>LambdaMART over ~200 candidates adds another <b>+12% NDCG@10</b> (0.042 → 0.046). Retrieval alone answers in <b>0.11 ms p50</b>, the full two-stage request in <b>7.4 ms</b> — a 67× latency increase for a 12% relevance gain, worth paying on a homepage and not on typeahead.</li>
+          <li>The ranker's strongest feature by gain was neither popularity nor any embedding score — it was <b>how many retrievers independently surfaced the same item</b>. LinUCB, meanwhile, tied the greedy ranker on offline replay (<b>0.387 vs 0.388</b>): a bandit cannot prove itself against a static log, so it ships behind the replay estimator rather than a chart pretending otherwise.</li>
+          <li>Cold start via bge content embeddings (a brand-new title is retrievable with zero interactions), hybrid dense + BM25 search fused by RRF (28 ms p50), MMR diversity (intra-list similarity 0.45 → 0.41), PSI drift monitoring, and FastAPI serving — with Spark/Airflow/Kubernetes scale-out documented rather than stubbed.</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">Two-tower retrieval</span><span class="tag">LambdaMART</span>
+          <span class="tag">Contextual bandits</span><span class="tag">NDCG</span><span class="tag">Hybrid search</span>
+        </div>
+        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/streamrec">View source →</a></p>
+      </article>
+
+      <article class="card reveal">
         <span class="accent-l" style="background:var(--orange)"></span>
         <h3>Railway Pantograph Monitoring</h3>
         <div class="meta">YOLOV8 &middot; EDGE INFERENCE &middot; INNOVATION AWARD</div>
