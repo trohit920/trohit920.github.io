@@ -178,12 +178,13 @@ h2{font-size:clamp(1.7rem,3.6vw,2.3rem);margin:0 0 12px;font-weight:700;letter-s
 
 /* ---------- cards ---------- */
 .grid{display:grid;gap:18px}
-.g2{grid-template-columns:repeat(auto-fit,minmax(min(430px,100%),1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(430px,100%),1fr));align-items:start}
 .g3{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
 .card{
-  --c:var(--sec);--c-rgb:var(--sec-rgb);
+  --c:var(--sec);--c-rgb:var(--sec-rgb);--padx:26px;--padt:26px;
   background:linear-gradient(168deg,rgba(20,23,29,.9),rgba(11,13,17,.9));
-  border:1px solid var(--line);border-radius:15px;padding:26px 26px 24px;
+  border:1px solid var(--line);border-radius:15px;
+  padding:var(--padt) var(--padx) 24px;
   transition:.22s;position:relative;overflow:hidden;
 }
 .card::after{
@@ -210,6 +211,16 @@ h2{font-size:clamp(1.7rem,3.6vw,2.3rem);margin:0 0 12px;font-weight:700;letter-s
 .tag:hover{color:var(--ink);border-color:rgba(var(--c-rgb),.6);background:rgba(var(--c-rgb),.12)}
 .accent-l{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);
   box-shadow:0 0 18px rgba(var(--c-rgb),.85);z-index:2}
+
+/* ---------- full-bleed screenshot banner at the top of a project card ---------- */
+img{max-width:100%}
+.shot{margin:calc(var(--padt) * -1) calc(var(--padx) * -1) 20px;position:relative}
+.shot img{display:block;width:100%;height:auto;background:var(--bg)}
+.shot figcaption{
+  font-family:var(--mono);font-size:11px;line-height:1.45;color:var(--ink-3);
+  padding:9px var(--padx);border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:rgba(7,8,10,.72);
+}
 .src{margin:16px 0 0;font-family:var(--mono);font-size:13px}
 .src a{color:var(--c);display:inline-flex;align-items:center;gap:6px}
 .src a:hover{text-decoration:none;gap:10px}
@@ -294,7 +305,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 @media(max-width:860px){
   .hero{padding:60px 0 54px}
   section{padding:66px 0}
-  .card{padding:22px 20px}
+  .card{--padx:20px;--padt:22px;padding-bottom:22px}
   .tl{padding-left:28px}
   .tl-item::before{left:-28px}
 }
@@ -469,6 +480,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
       <article class="card reveal" style="--c:var(--aqua);--c-rgb:var(--aqua-rgb)">
         <span class="accent-l"></span>
+        <figure class="shot">
+          <img src="img/cabinsense.webp" width="1400" height="745" loading="lazy" decoding="async"
+               alt="A frame of in-cabin dashcam footage with the CabinSense overlay drawn on it: a green STATUS: ATTENTIVE panel listing gaze zone, head pose, gaze angles, EAR and PERCLOS, drowsiness probability and the phone, smoking, drink, seatbelt and occupant flags, with a face box, 98 facial landmarks and head-pose axes on the driver.">
+          <figcaption>every value in the overlay is read out of the live pipeline, not annotated by hand &nbsp;·&nbsp; public dashcam footage</figcaption>
+        </figure>
         <h3>CabinSense — In-Cabin Driver &amp; Occupant Monitoring</h3>
         <div class="meta">ONNX RUNTIME &middot; MOBILENETV3 &middot; EDGE / SoC</div>
         <p>Real-time DMS/OMS inferring eleven signals — drowsiness, distraction, gaze zone, yawning, phone use, drinking, smoking, seatbelt, glasses, cap, and occupant count — from a single camera feed.</p>
@@ -492,6 +508,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
       <article class="card reveal" style="--c:var(--violet);--c-rgb:var(--violet-rgb)">
         <span class="accent-l"></span>
+        <figure class="shot">
+          <img src="img/rag.webp" width="1400" height="575" loading="lazy" decoding="async"
+               alt="Four bar charts comparing two local generator models with retrieval and guardrails held fixed: answer quality (token-F1) 0.42 for Qwen2.5-1.5B against 0.34 for Phi-3-mini, abstention accuracy 0.94 against 1.00, median latency 1.91 s against 3.20 s, and peak VRAM 3.35 GB against 2.94 GB.">
+          <figcaption>same retrieval, same guardrails, only the generator swapped &nbsp;·&nbsp; both scored faithfulness 1.00</figcaption>
+        </figure>
         <h3>Agentic RAG with Guardrails</h3>
         <div class="meta">LANGGRAPH &middot; FASTAPI &middot; FULLY LOCAL</div>
         <p>A local agentic RAG assistant over enterprise documents where refusing is a first-class outcome — and a harness that measures whether it refuses correctly.</p>
@@ -515,6 +536,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
       <article class="card reveal" style="--c:var(--yellow);--c-rgb:var(--yellow-rgb)">
         <span class="accent-l"></span>
+        <figure class="shot">
+          <img src="img/streamrec.webp" width="1400" height="507" loading="lazy" decoding="async"
+               alt="Grouped bar chart of four pipeline stages across three metrics. NDCG@10: popularity 0.018, SASRec-lite 0.029, two-tower 0.042, two-stage 0.046. Recall@10: 0.037, 0.058, 0.085, 0.087. Coverage@20: 0.08, 0.10, 0.74, 0.57.">
+          <figcaption>every stage scored on the same held-out item, ranking the full catalogue for all 6,040 users</figcaption>
+        </figure>
         <h3>StreamRec — Two-Stage Recommender &amp; Hybrid Search</h3>
         <div class="meta">PYTORCH &middot; LIGHTGBM &middot; FASTAPI &middot; FULLY LOCAL</div>
         <p>The streaming content-discovery stack end to end on MovieLens-1M — candidate generation, learning-to-rank, bandit re-ranking, cold start, and search — built to find out which stage the wins actually come from.</p>
