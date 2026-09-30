@@ -16,76 +16,111 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
 <style>
 :root{
-  --bg:#08090b; --bg-1:#0e1014; --bg-2:#14171d; --line:#22262e;
+  --bg:#07080a; --bg-1:#0e1014; --bg-2:#14171d; --line:#22262e; --line-2:#2f3542;
   --ink:#eef1f6; --ink-2:#a8b0bd; --ink-3:#6b7482;
-  --blue:#3987e5; --aqua:#199e70; --orange:#d95926; --yellow:#c98500; --violet:#9085e9;
+  --blue:#3d8ef0;   --blue-rgb:61,142,240;
+  --aqua:#19b283;   --aqua-rgb:25,178,131;
+  --orange:#e8682e; --orange-rgb:232,104,46;
+  --yellow:#dc9a09; --yellow-rgb:220,154,9;
+  --violet:#9d92f5; --violet-rgb:157,146,245;
+  --pink:#e4618f;   --pink-rgb:228,97,143;
+  --sec:var(--blue); --sec-rgb:var(--blue-rgb);
   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   --sans:'Inter',system-ui,-apple-system,sans-serif;
-  --maxw:1080px;
+  --maxw:1140px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{
   margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
-  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* ambient field so the page is never a flat void */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(1100px 680px at 8% -8%, rgba(61,142,240,.16), transparent 62%),
+    radial-gradient(900px 620px at 95% 2%, rgba(157,146,245,.13), transparent 64%),
+    radial-gradient(760px 520px at 50% 120%, rgba(25,178,131,.07), transparent 66%);
 }
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
 a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
-:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:3px}
+:focus-visible{outline:2px solid var(--sec);outline-offset:3px;border-radius:3px}
 
 /* ---------- nav ---------- */
 nav{
-  position:sticky;top:0;z-index:60;background:rgba(8,9,11,.82);
-  backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:60;background:rgba(7,8,10,.78);
+  backdrop-filter:blur(14px) saturate(140%);border-bottom:1px solid var(--line);
 }
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
-.brand{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink);letter-spacing:.02em}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink);letter-spacing:.02em;white-space:nowrap}
 .brand span{color:var(--blue)}
-.navlinks{display:flex;gap:26px}
-.navlinks a{font-size:13.5px;color:var(--ink-2);font-weight:500}
-.navlinks a:hover{color:var(--ink);text-decoration:none}
-@media(max-width:720px){.navlinks{display:none}}
+.navlinks{display:flex;gap:4px;align-items:center}
+.navlinks a{
+  font-size:13.5px;color:var(--ink-2);font-weight:500;padding:6px 11px;border-radius:7px;
+  transition:color .18s,background .18s;white-space:nowrap;
+}
+.navlinks a:hover{color:var(--ink);background:rgba(255,255,255,.055);text-decoration:none}
+.navlinks a.active{color:var(--ink);background:rgba(var(--sec-rgb),.15);
+  box-shadow:inset 0 0 0 1px rgba(var(--sec-rgb),.3)}
+.progress{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:transparent}
+.progress i{display:block;height:100%;width:0;
+  background:linear-gradient(90deg,var(--blue),var(--violet) 48%,var(--aqua));
+  box-shadow:0 0 12px rgba(61,142,240,.6);transition:width .1s linear}
 
 /* ---------- hero ---------- */
-.hero{padding:74px 0 64px;position:relative}
+.hero{padding:86px 0 70px;position:relative;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;left:50%;top:-320px;width:1200px;height:760px;
+  transform:translateX(-50%);z-index:-1;pointer-events:none;filter:blur(12px);
+  background:
+    radial-gradient(closest-side, rgba(61,142,240,.20), transparent 72%),
+    radial-gradient(closest-side at 70% 42%, rgba(157,146,245,.17), transparent 70%),
+    radial-gradient(closest-side at 26% 60%, rgba(25,178,131,.13), transparent 70%);
+}
 .eyebrow{
-  font-family:var(--mono);font-size:12px;color:var(--aqua);
-  letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;
-  display:flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:12px;color:var(--aqua);letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:20px;display:inline-flex;align-items:center;gap:9px;
+  padding:6px 13px 6px 11px;border-radius:999px;
+  background:rgba(var(--aqua-rgb),.10);border:1px solid rgba(var(--aqua-rgb),.30);
 }
 .dot{width:7px;height:7px;border-radius:50%;background:var(--aqua);
-  box-shadow:0 0 0 0 rgba(25,158,112,.7);animation:pulse 2.4s infinite}
+  box-shadow:0 0 0 0 rgba(25,178,131,.7);animation:pulse 2.4s infinite}
 @keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(25,158,112,.55)}
-  70%{box-shadow:0 0 0 9px rgba(25,158,112,0)}
-  100%{box-shadow:0 0 0 0 rgba(25,158,112,0)}
+  0%{box-shadow:0 0 0 0 rgba(25,178,131,.55)}
+  70%{box-shadow:0 0 0 9px rgba(25,178,131,0)}
+  100%{box-shadow:0 0 0 0 rgba(25,178,131,0)}
 }
-h1{font-size:clamp(2.5rem,6.2vw,4.1rem);line-height:1.04;margin:0 0 18px;
-  font-weight:800;letter-spacing:-.03em}
-h1 .grad{background:linear-gradient(103deg,var(--blue),var(--violet) 55%,var(--aqua));
+h1{font-size:clamp(2.5rem,6.2vw,4.25rem);line-height:1.04;margin:0 0 20px;
+  font-weight:800;letter-spacing:-.032em}
+h1 .grad{background:linear-gradient(103deg,var(--blue),var(--violet) 52%,var(--aqua));
   -webkit-background-clip:text;background-clip:text;color:transparent}
-.tagline{font-size:clamp(1.02rem,2.1vw,1.24rem);color:var(--ink-2);max-width:62ch;margin:0 0 30px}
+.tagline{font-size:clamp(1.02rem,2.1vw,1.24rem);color:var(--ink-2);max-width:62ch;margin:0 0 32px}
 .tagline b{color:var(--ink);font-weight:600}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:54px}
 .btn{
-  display:inline-flex;align-items:center;gap:8px;padding:11px 19px;border-radius:9px;
-  font-size:14px;font-weight:600;border:1px solid var(--line);
-  background:var(--bg-1);color:var(--ink);transition:.18s;font-family:var(--sans);
+  display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;
+  font-size:14px;font-weight:600;border:1px solid var(--line-2);
+  background:rgba(20,23,29,.7);color:var(--ink);transition:.18s;font-family:var(--sans);
 }
-.btn:hover{text-decoration:none;border-color:var(--blue);transform:translateY(-1px)}
-.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn.primary:hover{background:#2f77d0}
+.btn:hover{text-decoration:none;border-color:rgba(var(--blue-rgb),.6);transform:translateY(-2px);
+  box-shadow:0 10px 26px -14px rgba(var(--blue-rgb),.8)}
+.btn.primary{background:linear-gradient(135deg,var(--blue),#5f6fe8);border-color:transparent;color:#fff;
+  box-shadow:0 10px 30px -12px rgba(61,142,240,.75)}
+.btn.primary:hover{filter:brightness(1.08);box-shadow:0 14px 34px -12px rgba(61,142,240,.9)}
 
 /* ---------- live uncertainty panel ---------- */
 .panel{
-  border:1px solid var(--line);border-radius:14px;background:
-  linear-gradient(180deg,var(--bg-1),var(--bg));overflow:hidden;
+  border:1px solid var(--line-2);border-radius:16px;overflow:hidden;position:relative;
+  background:linear-gradient(180deg,rgba(20,23,29,.92),rgba(8,9,11,.92));
+  box-shadow:0 26px 60px -34px rgba(61,142,240,.55);
 }
+.panel::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
 .panel-head{
   display:flex;align-items:center;justify-content:space-between;gap:14px;
-  padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap;
+  padding:13px 17px;border-bottom:1px solid var(--line);flex-wrap:wrap;
 }
 .panel-title{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.09em;text-transform:uppercase}
 .readouts{display:flex;gap:20px;flex-wrap:wrap}
@@ -93,96 +128,189 @@ h1 .grad{background:linear-gradient(103deg,var(--blue),var(--violet) 55%,var(--a
 .readout b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;min-width:42px;display:inline-block}
 .meter{width:52px;height:5px;border-radius:3px;background:var(--bg-2);overflow:hidden}
 .meter i{display:block;height:100%;border-radius:3px;transition:width .35s ease}
-canvas{display:block;width:100%;height:150px}
-.panel-foot{padding:10px 16px;border-top:1px solid var(--line);
+canvas{display:block;width:100%;height:160px}
+.panel-foot{padding:11px 17px;border-top:1px solid var(--line);
   font-family:var(--mono);font-size:11px;color:var(--ink-3)}
 
 /* ---------- metric strip ---------- */
 .metrics{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
-  gap:1px;background:var(--line);border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;margin-top:44px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));
+  gap:12px;margin-top:46px;
 }
-.metric{background:var(--bg-1);padding:20px 18px}
-.metric .n{font-family:var(--mono);font-size:1.65rem;font-weight:600;letter-spacing:-.02em;line-height:1}
-.metric .l{font-size:12.5px;color:var(--ink-3);margin-top:8px;line-height:1.4}
+.metric{
+  background:linear-gradient(170deg,rgba(20,23,29,.92),rgba(12,14,18,.92));
+  border:1px solid var(--line);border-radius:13px;padding:20px 18px;position:relative;
+  overflow:hidden;transition:.2s;
+}
+.metric::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,var(--c),transparent)}
+.metric:hover{transform:translateY(-3px);border-color:rgba(var(--c-rgb),.45);
+  box-shadow:0 16px 36px -22px rgba(var(--c-rgb),.9)}
+.metric .n{font-family:var(--mono);font-size:1.85rem;font-weight:600;letter-spacing:-.025em;
+  line-height:1;color:var(--c)}
+.metric .l{font-size:12.5px;color:var(--ink-3);margin-top:9px;line-height:1.4}
 
 /* ---------- sections ---------- */
-section{padding:76px 0;border-top:1px solid var(--line)}
-.sec-head{margin-bottom:38px}
-.sec-num{font-family:var(--mono);font-size:12px;color:var(--blue);letter-spacing:.1em;margin-bottom:9px}
-h2{font-size:clamp(1.6rem,3.4vw,2.1rem);margin:0 0 10px;font-weight:700;letter-spacing:-.02em}
+section{padding:88px 0;position:relative;isolation:isolate}
+section::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(var(--sec-rgb),.65) 20%,rgba(var(--sec-rgb),.16) 58%,transparent);
+}
+section::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:460px;z-index:-1;pointer-events:none;
+  background:radial-gradient(820px 340px at 16% 0%, rgba(var(--sec-rgb),.11), transparent 68%);
+}
+#work{--sec:var(--blue);--sec-rgb:var(--blue-rgb)}
+#projects{--sec:var(--aqua);--sec-rgb:var(--aqua-rgb)}
+#stack{--sec:var(--violet);--sec-rgb:var(--violet-rgb)}
+#research{--sec:var(--yellow);--sec-rgb:var(--yellow-rgb)}
+#contact{--sec:var(--orange);--sec-rgb:var(--orange-rgb)}
+#projects,#research{background:linear-gradient(180deg,rgba(255,255,255,.022),transparent 46%)}
+.sec-head{margin-bottom:42px}
+.sec-num{
+  font-family:var(--mono);font-size:12px;color:var(--sec);letter-spacing:.1em;margin-bottom:12px;
+  display:inline-flex;align-items:center;gap:11px;
+}
+.sec-num::before{content:"";width:28px;height:2px;border-radius:2px;background:var(--sec);
+  box-shadow:0 0 12px rgba(var(--sec-rgb),.8)}
+h2{font-size:clamp(1.7rem,3.6vw,2.3rem);margin:0 0 12px;font-weight:700;letter-spacing:-.025em}
 .sec-sub{color:var(--ink-2);max-width:64ch;margin:0}
 
 /* ---------- cards ---------- */
-.grid{display:grid;gap:16px}
-.g2{grid-template-columns:repeat(auto-fit,minmax(430px,1fr))}
-.g3{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(430px,100%),1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
 .card{
-  background:var(--bg-1);border:1px solid var(--line);border-radius:13px;
-  padding:24px;transition:.2s;position:relative;overflow:hidden;
+  --c:var(--sec);--c-rgb:var(--sec-rgb);
+  background:linear-gradient(168deg,rgba(20,23,29,.9),rgba(11,13,17,.9));
+  border:1px solid var(--line);border-radius:15px;padding:26px 26px 24px;
+  transition:.22s;position:relative;overflow:hidden;
 }
-.card:hover{border-color:#2f3742;transform:translateY(-2px)}
-.card h3{margin:0 0 6px;font-size:1.06rem;font-weight:650;letter-spacing:-.01em}
-.card .meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin-bottom:13px}
-.card p{margin:0 0 13px;color:var(--ink-2);font-size:14.5px}
-.card ul{margin:0 0 13px;padding-left:17px;color:var(--ink-2);font-size:14px}
-.card li{margin-bottom:6px}
-.card li::marker{color:var(--ink-3)}
+.card::after{
+  content:"";position:absolute;left:0;top:0;right:0;height:220px;z-index:0;pointer-events:none;
+  background:radial-gradient(420px 170px at 8% 0%, rgba(var(--c-rgb),.13), transparent 70%);
+}
+.card>*{position:relative;z-index:1}
+.card:hover{transform:translateY(-4px);border-color:rgba(var(--c-rgb),.42);
+  box-shadow:0 22px 52px -26px rgba(var(--c-rgb),.95)}
+.card h3{margin:0 0 7px;font-size:1.12rem;font-weight:650;letter-spacing:-.012em}
+.card .meta{font-family:var(--mono);font-size:11.5px;color:var(--c);opacity:.85;margin-bottom:14px;letter-spacing:.04em}
+.card p{margin:0 0 15px;color:var(--ink-2);font-size:14.5px}
+.card ul{margin:0 0 15px;padding-left:18px;color:var(--ink-2);font-size:14px}
+.card li{margin-bottom:8px}
+.card li::marker{color:rgba(var(--c-rgb),.75)}
+.card li b{color:var(--ink)}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{
-  font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:5px;
-  background:var(--bg-2);color:var(--ink-2);border:1px solid var(--line);
+  font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:6px;
+  background:rgba(255,255,255,.035);color:var(--ink-2);border:1px solid var(--line);
+  transition:.16s;
 }
-.accent-l{position:absolute;left:0;top:0;bottom:0;width:3px}
+.card:hover .tag,.skill:hover .tag{border-color:rgba(var(--c-rgb),.3)}
+.tag:hover{color:var(--ink);border-color:rgba(var(--c-rgb),.6);background:rgba(var(--c-rgb),.12)}
+.accent-l{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c);
+  box-shadow:0 0 18px rgba(var(--c-rgb),.85);z-index:2}
+.src{margin:16px 0 0;font-family:var(--mono);font-size:13px}
+.src a{color:var(--c);display:inline-flex;align-items:center;gap:6px}
+.src a:hover{text-decoration:none;gap:10px}
+
+/* ---------- KPI strip inside a project card ---------- */
+.kpis{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(min(118px,100%),1fr));
+  gap:1px;background:var(--line);border:1px solid var(--line);border-radius:11px;
+  overflow:hidden;margin:0 0 17px;
+}
+.kpi{background:rgba(8,9,11,.85);padding:13px 14px}
+.kpi b{display:block;font-family:var(--mono);font-size:1.32rem;font-weight:600;
+  line-height:1.05;letter-spacing:-.02em;color:var(--c)}
+.kpi span{display:block;font-size:11.5px;color:var(--ink-3);margin-top:7px;line-height:1.35}
 
 /* ---------- timeline ---------- */
-.tl{position:relative;padding-left:30px}
-.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:var(--line)}
-.tl-item{position:relative;padding-bottom:34px}
+.tl{position:relative;padding-left:34px}
+.tl::before{content:"";position:absolute;left:6px;top:10px;bottom:10px;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--blue),rgba(157,146,245,.5) 45%,rgba(107,116,130,.25))}
+.tl-item{position:relative;padding-bottom:40px}
 .tl-item:last-child{padding-bottom:0}
 .tl-item::before{
-  content:"";position:absolute;left:-27px;top:7px;width:11px;height:11px;border-radius:50%;
-  background:var(--bg);border:2px solid var(--blue);
+  content:"";position:absolute;left:-33px;top:7px;width:14px;height:14px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--blue);box-shadow:0 0 0 4px rgba(61,142,240,.16);
 }
-.tl-item.past::before{border-color:var(--ink-3)}
-.tl-role{font-size:1.06rem;font-weight:650;margin:0}
+.tl-item.past::before{border-color:var(--ink-3);box-shadow:none}
+.tl-role{font-size:1.12rem;font-weight:650;margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .tl-co{color:var(--blue);font-weight:600}
-.tl-when{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:4px 0 12px}
-.tl-item ul{margin:0 0 12px;padding-left:17px;color:var(--ink-2);font-size:14.5px}
-.tl-item li{margin-bottom:7px}
-.tl-item li::marker{color:var(--ink-3)}
+.tl-item.past .tl-co{color:var(--violet)}
+.now{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--aqua);background:rgba(var(--aqua-rgb),.12);border:1px solid rgba(var(--aqua-rgb),.35);
+  padding:3px 9px;border-radius:999px}
+.tl-when{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);margin:6px 0 14px}
+.tl-item ul{margin:0 0 14px;padding-left:18px;color:var(--ink-2);font-size:14.5px}
+.tl-item li{margin-bottom:8px}
+.tl-item li::marker{color:rgba(61,142,240,.7)}
+.tl-item.past li::marker{color:var(--ink-3)}
 .tl-item li b{color:var(--ink);font-weight:600}
 
 /* ---------- skills ---------- */
-.skill{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:20px}
-.skill h4{margin:0 0 12px;font-size:13px;font-family:var(--mono);color:var(--ink-3);
+.skill{
+  --c:var(--violet);--c-rgb:var(--violet-rgb);
+  background:linear-gradient(168deg,rgba(20,23,29,.9),rgba(11,13,17,.9));
+  border:1px solid var(--line);border-radius:14px;padding:22px;transition:.2s;position:relative;
+  overflow:hidden;
+}
+.skill::before{content:"";position:absolute;left:0;top:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--c),transparent 78%)}
+.skill:hover{transform:translateY(-3px);border-color:rgba(var(--c-rgb),.4);
+  box-shadow:0 20px 46px -26px rgba(var(--c-rgb),.9)}
+.skill h4{margin:0 0 14px;font-size:13px;font-family:var(--mono);color:var(--c);
   letter-spacing:.07em;text-transform:uppercase}
 
 /* ---------- publications ---------- */
-.pub{border-left:2px solid var(--line);padding:2px 0 2px 18px;margin-bottom:22px}
-.pub:hover{border-left-color:var(--violet)}
-.pub .t{font-weight:600;font-size:15px;margin-bottom:3px}
+.pub{border-left:2px solid var(--line);padding:4px 0 4px 20px;margin-bottom:24px;transition:.18s}
+.pub:hover{border-left-color:var(--yellow);padding-left:24px}
+.pub .t{font-weight:600;font-size:15.5px;margin-bottom:4px}
 .pub .v{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
 
 /* ---------- contact ---------- */
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:26px}
-.cc{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;padding:19px;transition:.18s}
-.cc:hover{border-color:var(--blue);text-decoration:none;transform:translateY(-2px)}
-.cc .k{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.col-h{margin:0 0 20px;font-size:13px;font-family:var(--mono);color:var(--sec);
+  letter-spacing:.07em;text-transform:uppercase;font-weight:500}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(198px,100%),1fr));gap:14px;margin-top:28px}
+.cc{
+  background:linear-gradient(168deg,rgba(20,23,29,.9),rgba(11,13,17,.9));
+  border:1px solid var(--line);border-radius:13px;padding:20px;transition:.2s;display:block;
+}
+.cc:hover{border-color:rgba(var(--orange-rgb),.55);text-decoration:none;transform:translateY(-3px);
+  box-shadow:0 18px 40px -22px rgba(var(--orange-rgb),.9)}
+.cc .k{font-family:var(--mono);font-size:11px;color:var(--orange);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:7px}
 .cc .v{color:var(--ink);font-weight:600;font-size:14.5px;word-break:break-word}
 
-footer{border-top:1px solid var(--line);padding:30px 0 42px;color:var(--ink-3);font-size:13px}
+footer{border-top:1px solid var(--line);padding:32px 0 46px;color:var(--ink-3);font-size:13px}
 footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .mono{font-family:var(--mono)}
 
 /* ---------- reveal ---------- */
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
+
+@media(max-width:860px){
+  .hero{padding:60px 0 54px}
+  section{padding:66px 0}
+  .card{padding:22px 20px}
+  .tl{padding-left:28px}
+  .tl-item::before{left:-28px}
+}
+@media(max-width:720px){
+  nav .wrap{height:56px;gap:10px}
+  .navlinks{gap:2px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;
+    margin-right:-24px;padding-right:24px}
+  .navlinks::-webkit-scrollbar{display:none}
+  .navlinks a{font-size:12.5px;padding:6px 9px}
+}
+@media(max-width:520px){ .brand{display:none} }
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
   .dot{animation:none}
   html{scroll-behavior:auto}
+  .card:hover,.metric:hover,.skill:hover,.cc:hover,.btn:hover{transform:none}
 }
 </style>
 </head>
@@ -198,6 +326,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <a href="#research">Research</a>
       <a href="#contact">Contact</a>
     </div>
+    <div class="progress"><i id="bar"></i></div>
   </div>
 </nav>
 
@@ -238,12 +367,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div>
 
     <div class="metrics">
-      <div class="metric"><div class="n" style="color:var(--blue)">8+</div><div class="l">years in production AI</div></div>
-      <div class="metric"><div class="n" style="color:var(--aqua)">33%</div><div class="l">lower prediction error</div></div>
-      <div class="metric"><div class="n" style="color:var(--violet)">95.5%</div><div class="l">fault-detection accuracy</div></div>
-      <div class="metric"><div class="n" style="color:var(--yellow)">99.5%</div><div class="l">mAP@50, robot vision</div></div>
-      <div class="metric"><div class="n" style="color:var(--orange)">20%</div><div class="l">manufacturing efficiency gain</div></div>
-      <div class="metric"><div class="n" style="color:#d55181">12.3%</div><div class="l">energy saved, anomaly control</div></div>
+      <div class="metric" style="--c:var(--blue);--c-rgb:var(--blue-rgb)"><div class="n">8+</div><div class="l">years in production AI</div></div>
+      <div class="metric" style="--c:var(--aqua);--c-rgb:var(--aqua-rgb)"><div class="n">33%</div><div class="l">lower prediction error</div></div>
+      <div class="metric" style="--c:var(--violet);--c-rgb:var(--violet-rgb)"><div class="n">95.5%</div><div class="l">fault-detection accuracy</div></div>
+      <div class="metric" style="--c:var(--yellow);--c-rgb:var(--yellow-rgb)"><div class="n">99.5%</div><div class="l">mAP@50, robot vision</div></div>
+      <div class="metric" style="--c:var(--orange);--c-rgb:var(--orange-rgb)"><div class="n">20%</div><div class="l">manufacturing efficiency gain</div></div>
+      <div class="metric" style="--c:var(--pink);--c-rgb:var(--pink-rgb)"><div class="n">12.3%</div><div class="l">energy saved, anomaly control</div></div>
     </div>
   </div>
 </header>
@@ -258,7 +387,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
     <div class="tl">
       <div class="tl-item reveal">
-        <p class="tl-role">AI/ML Engineer &middot; <span class="tl-co">eMoldino</span></p>
+        <p class="tl-role">AI/ML Engineer &middot; <span class="tl-co">eMoldino</span> <span class="now">Now</span></p>
         <div class="tl-when">APR 2025 — PRESENT &middot; SEOUL, SOUTH KOREA</div>
         <ul>
           <li>Built a <b>Production Insight LLM agent</b> (AWS Bedrock Claude, LangGraph, Snowflake) with intent-driven routing and real-time streaming into a React frontend.</li>
@@ -316,49 +445,64 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div>
 
     <div class="grid g2">
-      <article class="card reveal">
-        <span class="accent-l" style="background:var(--blue)"></span>
+      <article class="card reveal" style="--c:var(--blue);--c-rgb:var(--blue-rgb)">
+        <span class="accent-l"></span>
         <h3>Uncertainty Quantification for LLMs</h3>
         <div class="meta">PYTORCH &middot; HUGGING FACE &middot; OPEN SOURCE</div>
         <p>Token- and sentence-level uncertainty for a local Qwen2.5-1.5B: predictive entropy, perplexity, max-softmax, and semantic entropy via NLI meaning-clustering — benchmarked on factual QA and math.</p>
+        <div class="kpis">
+          <div class="kpi"><b>0.945</b><span>AUROC from one free forward pass</span></div>
+          <div class="kpi"><b>0.900</b><span>AUROC from 10-sample semantic entropy</span></div>
+          <div class="kpi"><b>71%</b><span>of the compute, for 80% of the gain</span></div>
+        </div>
         <ul>
           <li>Error-detection AUROC, ECE with reliability diagrams, risk-coverage curves, bootstrap CIs — all hand-implemented and unit-tested.</li>
-          <li>Found a <b>free single forward pass beat 10-sample semantic entropy</b> (0.945 vs 0.900 AUROC), and traced why: question-conditioned NLI collapses on comparative questions.</li>
-          <li>Uncertainty-gated cascade recovered 80% of self-consistency's accuracy gain at 71% of the compute.</li>
+          <li>The <b>free signal beat the expensive one</b>, and I traced why rather than shrugging: question-conditioned NLI collapses on comparative questions, so meaning-clustering merges answers that genuinely differ.</li>
+          <li>An uncertainty-gated cascade spends the sampling budget only where the model is actually unsure, instead of uniformly across every prompt.</li>
         </ul>
         <div class="tags">
           <span class="tag">Semantic entropy</span><span class="tag">Calibration</span>
           <span class="tag">AUROC</span><span class="tag">NLI</span><span class="tag">Qwen2.5</span>
         </div>
-        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/llm-uncertainty-quantification">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/llm-uncertainty-quantification">View source →</a></p>
       </article>
 
-      <article class="card reveal">
-        <span class="accent-l" style="background:var(--aqua)"></span>
+      <article class="card reveal" style="--c:var(--aqua);--c-rgb:var(--aqua-rgb)">
+        <span class="accent-l"></span>
         <h3>CabinSense — In-Cabin Driver &amp; Occupant Monitoring</h3>
         <div class="meta">ONNX RUNTIME &middot; MOBILENETV3 &middot; EDGE / SoC</div>
         <p>Real-time DMS/OMS inferring eleven signals — drowsiness, distraction, gaze zone, yawning, phone use, drinking, smoking, seatbelt, glasses, cap, and occupant count — from a single camera feed.</p>
+        <div class="kpis">
+          <div class="kpi"><b>11</b><span>signals from one camera feed</span></div>
+          <div class="kpi"><b>7.4 ms</b><span>per frame on CPU, ~135 FPS</span></div>
+          <div class="kpi"><b>6–10×</b><span>slower under INT8, not faster</span></div>
+        </div>
         <ul>
           <li>Fuses ONNX face detection, 98-point landmarks, 6DRepNet head pose, L2CS gaze, EAR/MAR/PERCLOS geometry, and localized YOLO detectors into one temporally-smoothed state.</li>
           <li>Found the phone classifier firing at <b>p90 ≈ 0.99 on a clip containing no phone</b> — a whole-image head has no concept of absence. Moved object-like classes to localized detectors, keeping classifiers only for genuine face attributes and geometry for yawn.</li>
-          <li>Benchmarked the edge path and found <b>INT8 made the models 3.6× smaller but 6–10× slower</b> — dequantization overhead swamps a MobileNetV3's tiny convolutions. Shipped fp32 at <b>~7.4 ms per frame on CPU</b> (~135 FPS), with a documented path to when INT8 still wins.</li>
+          <li>INT8 turned out to be a <b>size win and a speed loss</b> — dequantization overhead swamps a MobileNetV3's tiny convolutions. So fp32 ships where compute is the constraint and INT8 only where flash and RAM are, with the benchmark script in the repo instead of a claim.</li>
           <li>Driver-ROI scheduling runs detectors on ~half the pixels (<b>141/145 frames ROI-only</b>) with periodic full-frame sweeps to recount occupants; one consolidated YOLOv8n covers three classes in a single inference to keep the SoC budget flat.</li>
         </ul>
         <div class="tags">
           <span class="tag">Object detection</span><span class="tag">INT8</span>
           <span class="tag">Head pose &amp; gaze</span><span class="tag">Multi-task learning</span><span class="tag">PERCLOS</span>
         </div>
-        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/cabinsense">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/cabinsense">View source →</a></p>
       </article>
 
-      <article class="card reveal">
-        <span class="accent-l" style="background:var(--violet)"></span>
+      <article class="card reveal" style="--c:var(--violet);--c-rgb:var(--violet-rgb)">
+        <span class="accent-l"></span>
         <h3>Agentic RAG with Guardrails</h3>
         <div class="meta">LANGGRAPH &middot; FASTAPI &middot; FULLY LOCAL</div>
         <p>A local agentic RAG assistant over enterprise documents where refusing is a first-class outcome — and a harness that measures whether it refuses correctly.</p>
+        <div class="kpis">
+          <div class="kpi"><b>1.00</b><span>faithfulness — every answer entailed</span></div>
+          <div class="kpi"><b>0.94</b><span>abstention accuracy, up from 0.69</span></div>
+          <div class="kpi"><b>0</b><span>access-control retrieval leaks</span></div>
+        </div>
         <ul>
-          <li><b>Faithfulness 1.00</b>, <b>abstention accuracy 0.94</b>, and <b>zero ACL retrieval leaks</b> — clearance is enforced in the vector-store filter, so protected text never reaches the model.</li>
-          <li>Pure NLI over-abstained on valid paraphrases; an embedding-cosine rescue lifted abstention <b>0.69 → 0.94</b> with faithfulness held at 1.00. Sentence-level premises moved entailment on a grounded pair from 0.0003 to 0.988.</li>
+          <li>Clearance is enforced <b>inside the vector-store filter, not the prompt</b>, so protected text never enters the model's context at all. That is the difference between a policy and a guardrail — and the one that survives an audit.</li>
+          <li>Pure NLI over-abstained on valid paraphrases; an embedding-cosine rescue fixed it with faithfulness held at 1.00. <b>NLI catches contradictions, cosine rescues restatements.</b> Sentence-level premises moved entailment on a grounded pair from 0.0003 to 0.988.</li>
           <li>Hybrid retrieval (dense + BM25 via RRF), prompt-injection defense, and document-level access control.</li>
           <li>Judge-free retrieval and answer-quality harness — hit@k, MRR, nDCG, NLI faithfulness — plus a two-model accuracy/latency/cost comparison.</li>
         </ul>
@@ -366,17 +510,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">Hybrid retrieval</span><span class="tag">Guardrails</span>
           <span class="tag">nDCG</span><span class="tag">Prompt injection</span><span class="tag">BM25</span>
         </div>
-        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/agentic-rag-guardrails">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/agentic-rag-guardrails">View source →</a></p>
       </article>
 
-      <article class="card reveal">
-        <span class="accent-l" style="background:var(--yellow)"></span>
+      <article class="card reveal" style="--c:var(--yellow);--c-rgb:var(--yellow-rgb)">
+        <span class="accent-l"></span>
         <h3>StreamRec — Two-Stage Recommender &amp; Hybrid Search</h3>
         <div class="meta">PYTORCH &middot; LIGHTGBM &middot; FASTAPI &middot; FULLY LOCAL</div>
         <p>The streaming content-discovery stack end to end on MovieLens-1M — candidate generation, learning-to-rank, bandit re-ranking, cold start, and search — built to find out which stage the wins actually come from.</p>
+        <div class="kpis">
+          <div class="kpi"><b>2.3×</b><span>NDCG@10 over the popularity baseline</span></div>
+          <div class="kpi"><b>+12%</b><span>more NDCG@10 from the ranker</span></div>
+          <div class="kpi"><b>67×</b><span>the latency that ranker costs</span></div>
+        </div>
         <ul>
-          <li>Two-tower retrieval over an ANN index scores <b>2.3× the popularity baseline on NDCG@10</b> (0.018 → 0.042) and lifts catalogue coverage <b>0.08 → 0.74</b>. A logQ correction on the in-batch negatives — which otherwise punish popular items for being popular — more than doubled Recall@10 (0.033 → 0.085).</li>
-          <li>LambdaMART over ~200 candidates adds another <b>+12% NDCG@10</b> (0.042 → 0.046). Retrieval alone answers in <b>0.11 ms p50</b>, the full two-stage request in <b>7.4 ms</b> — a 67× latency increase for a 12% relevance gain, worth paying on a homepage and not on typeahead.</li>
+          <li><b>Retrieval does the heavy lifting</b>, and it also widens the catalogue: coverage goes 0.08 → 0.74 of all titles. A logQ correction on the in-batch negatives — which otherwise punish popular items for being popular — more than doubled Recall@10 (0.033 → 0.085).</li>
+          <li>The ranker's 12% costs <b>7.3 ms</b>: retrieval alone answers in 0.11 ms p50, the full two-stage request in 7.4 ms. That trade is the actual engineering decision — worth paying on a homepage, not on typeahead.</li>
           <li>The ranker's strongest feature by gain was neither popularity nor any embedding score — it was <b>how many retrievers independently surfaced the same item</b>. LinUCB, meanwhile, tied the greedy ranker on offline replay (<b>0.387 vs 0.388</b>): a bandit cannot prove itself against a static log, so it ships behind the replay estimator rather than a chart pretending otherwise.</li>
           <li>Cold start via bge content embeddings (a brand-new title is retrievable with zero interactions), hybrid dense + BM25 search fused by RRF (28 ms p50), MMR diversity (intra-list similarity 0.45 → 0.41), PSI drift monitoring, and FastAPI serving — with Spark/Airflow/Kubernetes scale-out documented rather than stubbed.</li>
         </ul>
@@ -384,17 +533,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">Two-tower retrieval</span><span class="tag">LambdaMART</span>
           <span class="tag">Contextual bandits</span><span class="tag">NDCG</span><span class="tag">Hybrid search</span>
         </div>
-        <p style="margin:14px 0 0"><a href="https://github.com/trohit920/streamrec">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/streamrec">View source →</a></p>
       </article>
 
-      <article class="card reveal">
-        <span class="accent-l" style="background:var(--orange)"></span>
+      <article class="card reveal" style="--c:var(--orange);--c-rgb:var(--orange-rgb)">
+        <span class="accent-l"></span>
         <h3>Railway Pantograph Monitoring</h3>
         <div class="meta">YOLOV8 &middot; EDGE INFERENCE &middot; INNOVATION AWARD</div>
         <p>Real-time monitoring of train pantographs, catching arcing and contact-point misalignment before they become failures.</p>
+        <div class="kpis">
+          <div class="kpi"><b>99.5%</b><span>mAP@50, pantograph and ROI detection</span></div>
+          <div class="kpi"><b>Real-time</b><span>on constrained edge hardware</span></div>
+          <div class="kpi"><b>Award</b><span>Innovation Award, OpenSysNet</span></div>
+        </div>
         <ul>
-          <li>YOLOv8 detection of pantograph and ROI at <b>99.5% mAP@50</b>, with custom arcing-detection and contact-point tracking algorithms.</li>
-          <li>Transfer learning plus edge optimization for real-time throughput on constrained hardware.</li>
+          <li>YOLOv8 detection of the pantograph and its ROI, with <b>custom arcing-detection and contact-point tracking</b> built on top of the detector.</li>
+          <li>Transfer learning plus edge optimization to hold real-time throughput on constrained trackside hardware.</li>
           <li>Improved railway safety through early fault detection and cut maintenance cost via proactive identification.</li>
         </ul>
         <div class="tags">
@@ -415,7 +569,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
     </div>
 
     <div class="grid g3">
-      <div class="skill reveal">
+      <div class="skill reveal" style="--c:var(--blue);--c-rgb:var(--blue-rgb)">
         <h4>Generative AI &amp; LLM</h4>
         <div class="tags">
           <span class="tag">Agentic RAG</span><span class="tag">LangGraph</span><span class="tag">LangChain</span>
@@ -425,7 +579,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">AWS Bedrock</span><span class="tag">GPT-4o</span><span class="tag">Transformers</span>
         </div>
       </div>
-      <div class="skill reveal">
+      <div class="skill reveal" style="--c:var(--aqua);--c-rgb:var(--aqua-rgb)">
         <h4>Computer Vision</h4>
         <div class="tags">
           <span class="tag">OpenCV</span><span class="tag">YOLOv5/v8</span><span class="tag">U-Net</span>
@@ -434,7 +588,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">DMS/OMS/ADAS</span><span class="tag">MediaPipe</span>
         </div>
       </div>
-      <div class="skill reveal">
+      <div class="skill reveal" style="--c:var(--violet);--c-rgb:var(--violet-rgb)">
         <h4>Deep Learning &amp; Edge</h4>
         <div class="tags">
           <span class="tag">PyTorch</span><span class="tag">TensorFlow</span><span class="tag">Keras</span>
@@ -443,7 +597,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">TensorRT</span><span class="tag">Multi-task learning</span>
         </div>
       </div>
-      <div class="skill reveal">
+      <div class="skill reveal" style="--c:var(--yellow);--c-rgb:var(--yellow-rgb)">
         <h4>Data &amp; Cloud</h4>
         <div class="tags">
           <span class="tag">Snowflake</span><span class="tag">Snowpark</span><span class="tag">Pandas</span>
@@ -451,7 +605,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">Kafka</span><span class="tag">Hadoop</span><span class="tag">Azure ML</span><span class="tag">Databricks</span>
         </div>
       </div>
-      <div class="skill reveal">
+      <div class="skill reveal" style="--c:var(--orange);--c-rgb:var(--orange-rgb)">
         <h4>MLOps &amp; DevOps</h4>
         <div class="tags">
           <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">MLflow</span>
@@ -459,7 +613,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">FastAPI</span><span class="tag">Langfuse</span><span class="tag">Streamlit</span>
         </div>
       </div>
-      <div class="skill reveal">
+      <div class="skill reveal" style="--c:var(--pink);--c-rgb:var(--pink-rgb)">
         <h4>Languages &amp; Viz</h4>
         <div class="tags">
           <span class="tag">Python</span><span class="tag">C++</span><span class="tag">SQL</span>
@@ -480,6 +634,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
     <div class="grid g2">
       <div class="reveal">
+        <h3 class="col-h">Published research</h3>
         <div class="pub">
           <div class="t">Energy Consumption Prediction Using LSTM Models</div>
           <div class="v">ICMLA — Intl. Conference on Machine Learning and Applications</div>
@@ -492,10 +647,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <div class="t">Augmentation of RGB Dataset for Improved Performance on Infrared Classifier</div>
           <div class="v">Electronics and Information Communications Conference, 2016</div>
         </div>
+        <div class="card" style="margin-top:26px;--c:var(--aqua);--c-rgb:var(--aqua-rgb)">
+          <h3>Languages</h3>
+          <div class="tags">
+            <span class="tag">English — fluent</span>
+            <span class="tag">Korean — professional working</span>
+            <span class="tag">Hindi — native</span>
+          </div>
+        </div>
       </div>
 
       <div class="reveal">
-        <div class="card" style="margin-bottom:16px">
+        <div class="card" style="margin-bottom:16px;--c:var(--yellow);--c-rgb:var(--yellow-rgb)">
           <h3>Recognition</h3>
           <ul style="margin-bottom:0">
             <li><b>Innovation Award</b> — OpenSysNet, for the pantograph monitoring system (95.5% fault-detection accuracy).</li>
@@ -503,20 +666,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
             <li><b>IEEE member</b>, active in AI/ML and computer-vision communities.</li>
           </ul>
         </div>
-        <div class="card">
+        <div class="card" style="--c:var(--blue);--c-rgb:var(--blue-rgb)">
           <h3>Education</h3>
           <ul style="margin-bottom:0">
             <li><b>M.S., Electrical Engineering &amp; Computer Science</b> — Gwangju Institute of Science and Technology (GIST), 2017. Specialization: AI and machine learning.</li>
             <li><b>B.Tech., Electronics &amp; Communication Engineering</b> — Green Hills Engineering College, India, 2014.</li>
           </ul>
-        </div>
-        <div class="card" style="margin-top:16px">
-          <h3>Languages</h3>
-          <div class="tags">
-            <span class="tag">English — fluent</span>
-            <span class="tag">Korean — professional working</span>
-            <span class="tag">Hindi — native</span>
-          </div>
         </div>
       </div>
     </div>
@@ -576,6 +731,47 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
     revealables.forEach(function (el) { io.observe(el); });
+  }
+
+  // ---- scroll progress bar ----------------------------------------------
+  // A long page needs to tell you how much of it is left, or you bail early.
+  var bar = document.getElementById("bar");
+  if (bar) {
+    var ticking = false;
+    var paint = function () {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+      bar.style.width = Math.min(100, Math.max(0, pct)) + "%";
+      ticking = false;
+    };
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(paint); }
+    }, { passive: true });
+    window.addEventListener("resize", paint, { passive: true });
+    paint();
+  }
+
+  // ---- active section in the nav ----------------------------------------
+  // The nav link for whatever you are reading lights up in that section's own
+  // colour, so the page reads as chapters rather than one undifferentiated scroll.
+  var sections = document.querySelectorAll("section[id]");
+  var linkFor = {};
+  document.querySelectorAll(".navlinks a").forEach(function (a) {
+    linkFor[a.getAttribute("href").slice(1)] = a;
+  });
+  if (sections.length && "IntersectionObserver" in window) {
+    var visible = {};
+    var navio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+      var best = null, bestRatio = 0;
+      Object.keys(visible).forEach(function (id) {
+        if (visible[id] > bestRatio) { bestRatio = visible[id]; best = id; }
+      });
+      Object.keys(linkFor).forEach(function (id) {
+        linkFor[id].classList.toggle("active", id === best);
+      });
+    }, { threshold: [0, 0.15, 0.4, 0.75], rootMargin: "-56px 0px -45% 0px" });
+    sections.forEach(function (sec) { navio.observe(sec); });
   }
 
   // ---- live uncertainty trace -------------------------------------------
