@@ -41,3 +41,9 @@ python3 -m http.server 8000
 |---|---|
 | `index.html` | The entire site |
 | `Rohit_Thakur_Resume.pdf` | Downloadable résumé, linked from the hero and contact section |
+| `blog/index.html` | Blog index, linked from the nav |
+| `blog/<slug>/index.html` | One folder per post, plain HTML, so URLs end in `/blog/<slug>/` |
+| `blog/blog.css` | Shared post styles, using the same colour and type tokens as `index.html` |
+| `blog/img/` | Post figures, as WebP |
+
+To add a post, copy an existing post folder, edit the HTML, and add an entry at the top of `blog/index.html`. There is still no build step.

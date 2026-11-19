@@ -335,6 +335,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
       <a href="#projects">Projects</a>
       <a href="#stack">Stack</a>
       <a href="#research">Research</a>
+      <a href="blog/">Blog</a>
       <a href="#contact">Contact</a>
     </div>
     <div class="progress"><i id="bar"></i></div>
@@ -467,18 +468,18 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <div class="kpis">
           <div class="kpi"><b>0.945</b><span>AUROC from one free forward pass</span></div>
           <div class="kpi"><b>0.900</b><span>AUROC from 10-sample semantic entropy</span></div>
-          <div class="kpi"><b>71%</b><span>of the compute, for 80% of the gain</span></div>
+          <div class="kpi"><b>44%</b><span>of the generations for the full voting gain on maths</span></div>
         </div>
         <ul>
           <li>Error-detection AUROC, ECE with reliability diagrams, risk-coverage curves, bootstrap CIs — all hand-implemented and unit-tested.</li>
-          <li>The <b>free signal beat the expensive one</b>, and I traced why rather than shrugging: question-conditioned NLI collapses on comparative questions, so meaning-clustering merges answers that genuinely differ.</li>
-          <li>An uncertainty-gated cascade spends the sampling budget only where the model is actually unsure, instead of uniformly across every prompt.</li>
+          <li>The <b>free signal matched the expensive one</b>, and I dug into why rather than shrugging: question-conditioned NLI merged distinct answers in 87 of 200 questions, including ones that genuinely differ (Michigan and Ohio State as one &ldquo;meaning&rdquo;), most often on &ldquo;who&rdquo; questions.</li>
+          <li>An uncertainty-gated cascade, gated on the free signal and fitted on dev, samples only where the model is unsure: 38% of maths problems, matching always-sample accuracy on the 50-problem test split.</li>
         </ul>
         <div class="tags">
           <span class="tag">Semantic entropy</span><span class="tag">Calibration</span>
           <span class="tag">AUROC</span><span class="tag">NLI</span><span class="tag">Qwen2.5</span>
         </div>
-        <p class="src"><a href="https://github.com/trohit920/llm-uncertainty-quantification">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/llm-uncertainty-quantification">View source →</a> &nbsp;&middot;&nbsp; <a href="blog/llm-uncertainty-free-signal/">Read the write-up →</a></p>
       </article>
 
       <article class="card reveal" style="--c:var(--aqua);--c-rgb:var(--aqua-rgb)">

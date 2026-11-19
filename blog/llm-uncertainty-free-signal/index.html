@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The free uncertainty signal kept up with the expensive one — Rohit Thakur</title>
+<meta name="description" content="On a local 1.5B LLM, a free single-pass signal matched 10-sample semantic entropy at spotting wrong answers. The reason: the NLI step meant to help was merging answers that disagree.">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="The free uncertainty signal kept up with the expensive one">
+<meta property="og:description" content="A single forward pass matched 10-sample semantic entropy at catching a local LLM's wrong answers, and the NLI clustering step was the reason.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://trohit920.github.io/blog/llm-uncertainty-free-signal/">
+<link rel="canonical" href="https://trohit920.github.io/blog/llm-uncertainty-free-signal/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">rohit<span>.</span>thakur</a>
+    <div class="navlinks">
+      <a href="/#projects">Projects</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="read wrap">
+    <div class="eyebrow">LLM evaluation &middot; Uncertainty</div>
+    <h1>The free uncertainty signal kept up with the expensive one</h1>
+    <p class="byline">Rohit Thakur &middot; <time datetime="2026-11-19">19 November 2026</time> &middot; 5 min read</p>
+
+    <p class="lede">I wanted to know whether a small local LLM can tell when it is about to be wrong, and how much that knowledge costs. The method everyone reaches for, semantic entropy, takes ten extra generations and an NLI model. A number you get for free from the answer you were already generating did about as well. The interesting part is why.</p>
+
+    <h2>The question</h2>
+    <p>If a model gives you an answer, can a cheap signal rank its wrong answers above its right ones, and is the expensive signal worth paying for? That is the practical question behind every "should this answer be shown, flagged or escalated?" decision.</p>
+
+    <h2>The setup</h2>
+    <ul>
+      <li><b>Model:</b> <code>Qwen2.5-1.5B-Instruct</code> in fp16 on a single 8 GB laptop GPU (RTX 2070 Max-Q).</li>
+      <li><b>Tasks:</b> NQ-Open (closed-book factual questions, short answers) and GSM8K (grade-school maths with chain of thought).</li>
+      <li><b>Free signals:</b> computed from the greedy answer itself: sequence log-probability, perplexity, token entropy, softmax margins.</li>
+      <li><b>Expensive signals:</b> 10 extra samples at temperature 1.0, then semantic entropy, which groups samples by meaning using an NLI model (<code>nli-deberta-v3-small</code>) and measures how spread out the meanings are.</li>
+      <li><b>Metric:</b> error-detection AUROC, with wrong answers as the positive class. 0.5 is a coin flip, 1.0 ranks every wrong answer above every right one. Every threshold is fitted on a dev split and reported on a held-out test split, with 95% bootstrap intervals.</li>
+    </ul>
+    <p>Code, raw per-question records and the generated report are in <a href="https://github.com/trohit920/llm-uncertainty-quantification">llm-uncertainty-quantification</a>.</p>
+
+    <h2>The result</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Task (test split)</th><th>Best free signal</th><th>Semantic entropy</th><th>Best sampled signal</th></tr></thead>
+        <tbody>
+          <tr><td>NQ-Open<span class="sub">100 questions</span></td><td class="num">0.945<span class="sub">95% CI 0.899&ndash;0.981</span></td><td class="num">0.900<span class="sub">95% CI 0.826&ndash;0.956</span></td><td class="num">0.916<span class="sub">lexical entropy</span></td></tr>
+          <tr><td>GSM8K<span class="sub">50 problems</span></td><td class="num">0.828<span class="sub">95% CI 0.684&ndash;0.945</span></td><td class="num">0.794<span class="sub">95% CI 0.659&ndash;0.911</span></td><td class="num">0.884<span class="sub">lexical entropy</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>On factual questions, sequence log-probability from the single greedy pass came out on top. On maths, signals built from the samples led. In both tasks the confidence intervals overlap, so the honest reading is <b>a tie on factual QA, not a win</b>. A tie is still the headline: the free signal costs nothing beyond the answer you were already generating, while the expensive one costs ten more generations and an NLI pass.</p>
+
+    <figure>
+      <img src="../img/uq-auroc-nq-open.webp" width="1400" height="1093" loading="lazy"
+        alt="Bar chart of error-detection AUROC on NQ-Open. Sequence log-prob leads at 0.945, lexical entropy 0.916, semantic entropy 0.900, with overlapping 95% intervals.">
+      <figcaption>Error-detection AUROC on NQ-Open, test split. Orange bars are free single-pass signals, blue bars need sampling. The legend overlaps the last bar in the original figure.</figcaption>
+    </figure>
+
+    <h2>The surprise: semantic clustering did not help</h2>
+    <p>Look at the blue bars again. Semantic entropy (0.900) did not beat <b>lexical entropy</b> (0.916), which is the same calculation on exact answer strings, with no NLI at all. The gap is within noise, but it points the wrong way: semantic clustering exists to merge answers like "Paris" and "Paris, France" so that harmless rewording does not look like uncertainty, and that should have helped. On GSM8K it trailed by more (0.794 against 0.884).</p>
+    <p>The per-question records suggest why. By design the NLI step can only merge distinct answer strings, never split them, and across all 200 NQ-Open questions (dev and test together) it merged them in <b>87</b>. Some merges are exactly what you want: "neuron" and "neurons", "two years" and "2 years". Many are not:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Question</th><th>What the 10 samples said</th><th>Meanings found</th></tr></thead>
+        <tbody>
+          <tr><td>who has won more national championships michigan or ohio state</td><td>michigan &times;4, ohio state &times;6</td><td class="num">1</td></tr>
+          <tr><td>what is the baby elephants name in jungle book</td><td>baloo &times;9, bagheera &times;1</td><td class="num">1</td></tr>
+          <tr><td>who sings you can't get what you want</td><td>9 different answers, from Madonna to Guns N' Roses</td><td class="num">2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>When contradictory answers become one meaning, semantic entropy reports the model as certain at exactly the moment it is torn. All three answers above were wrong. That is the worst possible failure for an error detector: confidence on the errors.</p>
+    <p>The merging is not spread evenly. It hit <b>54% of "who" questions</b> (47 of 87) but only <b>11% of "when" questions</b> (4 of 37). My working explanation: each NLI comparison is conditioned on the question, so the two texts being compared are mostly identical and differ only by a name, and a small entailment model reads two near-identical sentences as entailment. It is not only names, though: on GSM8K the same step merged distinct numbers in 18 of 100 problems. I have not isolated the cause with an ablation yet, so treat this as a hypothesis rather than a finding.</p>
+
+    <h2>Where sampling did earn its cost</h2>
+    <p>On GSM8K, agreement between samples is a strong signal: majority voting over 10 samples lifts accuracy from 0.56 to 0.66. The useful question there is not "free or expensive" but "when to pay". An <b>uncertainty-gated cascade</b> answers greedily, checks the free sequence log-probability, and only samples when that answer looks shaky. The escalation threshold is fitted on the dev split.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Policy (GSM8K test)</th><th>Accuracy</th><th>Generations per question</th></tr></thead>
+        <tbody>
+          <tr><td>Greedy only</td><td class="num">0.56</td><td class="num">1.0</td></tr>
+          <tr><td>Always sample 10 and vote</td><td class="num">0.66</td><td class="num">11.0</td></tr>
+          <tr><td>Cascade gated on the free signal</td><td class="num">0.66</td><td class="num">4.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The cascade escalated 38% of problems and matched always-sampling accuracy with <b>44% of the generations</b>. With 50 test problems, one problem is worth 0.02 accuracy, so read this as "most of the gain for under half the compute", not as an exact figure.</p>
+
+    <div class="callout">
+      <p><b>How I nearly got this wrong.</b> My first version of this cascade was gated on lexical entropy, picked because it had the best AUROC on the <i>test</i> split. That is two mistakes in one: choosing anything by its test score is leakage, and lexical entropy needs the ten samples before it can decide whether to take them, so the "savings" were not real. An independent review caught it. Gating on the free signal with everything fitted on dev turned out no worse, and cheaper.</p>
+    </div>
+
+    <h2>What I would do in production</h2>
+    <ul>
+      <li><b>Start with the free signal.</b> Sequence log-probability is already in your logits. Log it on every response before you build anything more expensive.</li>
+      <li><b>Pay for sampling only behind a gate,</b> and only on tasks where agreement between samples carries signal, such as reasoning with checkable answers.</li>
+      <li><b>If you use semantic entropy, audit the clustering.</b> Track how often meaning clusters are fewer than distinct answers, and read a sample of the merges. A rate like 87 in 200 is a warning, not a detail.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li><b>Small samples.</b> 100 test questions on NQ-Open and 50 on GSM8K. Intervals span roughly &plusmn;0.1 AUROC, so I do not claim an ordering between signals inside that band, and I have not run a paired test between them.</li>
+      <li><b>A 1.5B model.</b> Closed-book accuracy on NQ-Open was only 14% on the test split. Results may differ on larger models.</li>
+      <li><b>Exact-match grading.</b> A correct answer phrased outside the alias list counts as wrong, which adds noise to every number here.</li>
+      <li><b>One small NLI model.</b> A larger entailment model, or comparing answers without the question attached, might merge less. That is the next experiment.</li>
+    </ul>
+
+    <div class="post-foot">
+      <p>Code, per-question records and the full report: <a href="https://github.com/trohit920/llm-uncertainty-quantification">github.com/trohit920/llm-uncertainty-quantification</a>.</p>
+      <p><a href="/blog/">&larr; All posts</a></p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
+</footer>
+</body>
+</html>
