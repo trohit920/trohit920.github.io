@@ -521,12 +521,13 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <div class="meta">LANGGRAPH &middot; FASTAPI &middot; FULLY LOCAL</div>
         <p>A local agentic RAG assistant over enterprise documents where refusing is a first-class outcome — and a harness that measures whether it refuses correctly.</p>
         <div class="kpis">
-          <div class="kpi"><b>1.00</b><span>faithfulness — every answer entailed</span></div>
-          <div class="kpi"><b>0.94</b><span>abstention accuracy, up from 0.69</span></div>
+          <div class="kpi"><b>1.00</b><span>faithfulness — every answer grounded in retrieved text</span></div>
+          <div class="kpi"><b>15/16</b><span>correct answer-or-refuse decisions</span></div>
           <div class="kpi"><b>0</b><span>access-control retrieval leaks</span></div>
         </div>
         <ul>
-          <li>Clearance is enforced <b>inside the vector-store filter, not the prompt</b>, so protected text never enters the model's context at all. That is the difference between a policy and a guardrail — and the one that survives an audit.</li>
+          <li>Clearance is enforced <b>at retrieval, before ranking, not in the prompt</b>, so protected text never enters the model's context at all. That is the difference between a policy and a guardrail.</li>
+          <li>Zero leaks is not the whole story: denied the right document, the model answered 2 of 3 confidential-only questions <b>from the wrong one, with a citation</b>. Groundedness checks support, not relevance.</li>
           <li>Pure NLI over-abstained on valid paraphrases; an embedding-cosine rescue fixed it with faithfulness held at 1.00. <b>NLI catches contradictions, cosine rescues restatements.</b> Sentence-level premises moved entailment on a grounded pair from 0.0003 to 0.988.</li>
           <li>Hybrid retrieval (dense + BM25 via RRF), prompt-injection defense, and document-level access control.</li>
           <li>Judge-free retrieval and answer-quality harness — hit@k, MRR, nDCG, NLI faithfulness — plus a two-model accuracy/latency/cost comparison.</li>
@@ -535,7 +536,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
           <span class="tag">Hybrid retrieval</span><span class="tag">Guardrails</span>
           <span class="tag">nDCG</span><span class="tag">Prompt injection</span><span class="tag">BM25</span>
         </div>
-        <p class="src"><a href="https://github.com/trohit920/agentic-rag-guardrails">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/agentic-rag-guardrails">View source →</a> &nbsp;&middot;&nbsp; <a href="blog/rag-access-control-wrong-answers/">Read the write-up →</a></p>
       </article>
 
       <article class="card reveal" style="--c:var(--yellow);--c-rgb:var(--yellow-rgb)">

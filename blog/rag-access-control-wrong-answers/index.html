@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero leaks, two wrong answers — Rohit Thakur</title>
+<meta name="description" content="Access control in a local RAG system leaked nothing, yet an under-clearance user still got confident, cited, wrong answers. A policy stops data from leaking; it does not make the answer right.">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="Zero leaks, two wrong answers: what access control in RAG does not cover">
+<meta property="og:description" content="A policy kept every confidential chunk away from the model. The model still answered from the wrong document, with a citation.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://trohit920.github.io/blog/rag-access-control-wrong-answers/">
+<link rel="canonical" href="https://trohit920.github.io/blog/rag-access-control-wrong-answers/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">rohit<span>.</span>thakur</a>
+    <div class="navlinks">
+      <a href="/#projects">Projects</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="read wrap">
+    <div class="eyebrow">RAG &middot; Access control &middot; Evaluation</div>
+    <h1>Zero leaks, two wrong answers</h1>
+    <p class="byline">Rohit Thakur &middot; <time datetime="2026-11-19">19 November 2026</time> &middot; 6 min read</p>
+
+    <p class="lede">I built a local RAG assistant whose access control never leaked a single confidential passage. Then I asked it confidential questions as a user without clearance, and it answered two of them anyway: confidently, with citations, and wrong. Access control did exactly its job. Its job was smaller than I had assumed.</p>
+
+    <h2>The question</h2>
+    <p>When a user asks about something they are not cleared to see, what should a RAG system do? "Not leak it" is the obvious answer, and the easy one to test. The harder half is what the system says <i>instead</i>.</p>
+
+    <h2>The setup</h2>
+    <ul>
+      <li><b>Corpus:</b> 10 hand-written enterprise documents (expense policy, KYC/AML procedure, Q3 financials and so on), each labelled public, internal or confidential. Synthetic on purpose: public datasets have no clearance labels to test against.</li>
+      <li><b>Pipeline:</b> a LangGraph agent with hybrid retrieval (dense <code>bge-small</code> plus BM25, fused by reciprocal rank), <code>Qwen2.5-1.5B-Instruct</code> for generation, and a groundedness check: an NLI model (<code>nli-deberta-v3-small</code>), with an embedding-similarity fallback, must find most answer sentences supported by retrieved text. Everything runs locally.</li>
+      <li><b>Evaluation:</b> 16 gold questions, including 4 asked by an internal-clearance user whose answers are labelled confidential.</li>
+    </ul>
+    <p>Code, corpus and gold set: <a href="https://github.com/trohit920/agentic-rag-guardrails">agentic-rag-guardrails</a>.</p>
+
+    <h2>A policy, not a guardrail</h2>
+    <p>I drew a line early between two kinds of protection. A <b>guardrail</b> is a classifier that judges content: the prompt-injection detector, the groundedness check. It can be wrong, so you measure its error rate. A <b>policy</b> is a rule you can state exactly, such as "an internal user never sees a confidential chunk", and it should be enforced where it cannot be argued with. Here that means before ranking: confidential chunks are filtered out of the search itself, so they never reach the prompt, and no instruction to the model can bring them back.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Measure (16 questions)</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Correct answer-or-refuse decisions</td><td class="num">15 of 16</td></tr>
+          <tr><td>Answers grounded in retrieved text</td><td class="num">11 of 11</td></tr>
+          <tr><td>Confidential chunks retrieved for an internal user</td><td class="num">0 of 4 questions</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The 16-question run asks each question at the clearance it requires; the four under-clearance cases are a separate check. The policy held: zero leaks. So I looked at what the system said instead.</p>
+
+    <h2>The surprise: passing the groundedness check is not the same as being right</h2>
+    <p>I re-ran the four under-clearance questions and read every answer. The saved evaluation keeps only counts, so the wording below comes from my re-run on CPU; its counts match the saved run.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Question (internal user)</th><th>What it said</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>What transaction amount triggers enhanced due diligence?</td><td>"...when lodging costs exceed the cap set at USD 200 per night..." [1]</td><td>Wrong, cited the travel policy</td></tr>
+          <tr><td>Within how many days must a suspicious activity report be filed?</td><td>"...within twenty-four hours of discovery" [1]</td><td>Wrong (it is fifteen days); cited the incident-response plan, which does not say this</td></tr>
+          <tr><td>What was Q3 2025 revenue?</td><td>Refused</td><td>Correct</td></tr>
+          <tr><td>What approvals are needed to give a new vendor access to production data?</td><td>Internal owner sponsors it, CISO approves it</td><td>Correct, see below</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Both wrong answers passed the groundedness check. Each reuses a real figure from retrieved text: the travel policy really does cap hotel costs at USD 200 a night, and the information-security policy really does require security incidents to be reported within twenty-four hours. No document connects either figure to the question asked, yet the sentence-level check accepted both. (I did not record whether the NLI path or the similarity fallback let each one through.) The model, denied the right document, answered from the closest one it could see. A groundedness check asks "is this sentence supported by the context?", not "does this answer the question?", and here those came apart.</p>
+    <p>The second answer has a further problem. Its citation points to a chunk of the incident-response plan whose only deadlines are five business days and seventy-two hours. The twenty-four-hour rule came from a different retrieved document. The groundedness check compares the answer with <i>all</i> retrieved text, so a wrong citation passes as long as some other chunk supports the sentence.</p>
+
+    <h3>My own harness overcounted</h3>
+    <p>The evaluation script reported three confabulations, not two. It counts every non-refusal on these questions as wrong, without reading the answer. Reading them showed that the vendor question is fully answerable from an <i>internal</i> document: the onboarding procedure states the CISO approval rule. It was probably labelled confidential because a confidential document also covers it. The system's answer was correct, though less complete than the gold answer (it left out the security review), and the label was wrong. Evaluation sets need auditing too.</p>
+
+    <h2>The tempting fix, and where it stops working</h2>
+    <p>If the retrieved context is off-topic, the system should refuse. Retrieval similarity is the obvious signal: refuse when the best chunk is not close enough to the question.</p>
+    <figure class="chart">
+      <svg class="chart-wide" viewBox="0 0 680 262" role="img" aria-labelledby="relv-title-wide relv-desc-wide" style="width:100%;height:auto;font-family:Inter,system-ui,sans-serif">
+<title id="relv-title-wide">Retrieval relevance: answerable versus denied questions</title>
+<desc id="relv-desc-wide">Answerable questions, at their own clearance, score between 0.68 and 0.86. Denied questions score q07 0.60, q08 0.52, q10 0.69. A gate at 0.65 blocks q07 and q08 but not q10, which overlaps the allowed range.</desc>
+<line x1="186.7" y1="44" x2="186.7" y2="222" stroke="#2f3542" stroke-width="1"/>
+<text x="186.7" y="240" fill="#6b7482" font-size="11.5" text-anchor="middle">0.5</text>
+<line x1="304.0" y1="44" x2="304.0" y2="222" stroke="#2f3542" stroke-width="1"/>
+<text x="304.0" y="240" fill="#6b7482" font-size="11.5" text-anchor="middle">0.6</text>
+<line x1="421.3" y1="44" x2="421.3" y2="222" stroke="#2f3542" stroke-width="1"/>
+<text x="421.3" y="240" fill="#6b7482" font-size="11.5" text-anchor="middle">0.7</text>
+<line x1="538.7" y1="44" x2="538.7" y2="222" stroke="#2f3542" stroke-width="1"/>
+<text x="538.7" y="240" fill="#6b7482" font-size="11.5" text-anchor="middle">0.8</text>
+<line x1="656.0" y1="44" x2="656.0" y2="222" stroke="#2f3542" stroke-width="1"/>
+<text x="656.0" y="240" fill="#6b7482" font-size="11.5" text-anchor="middle">0.9</text>
+<text x="392.0" y="260" fill="#6b7482" font-size="11.5" text-anchor="middle">Best query-to-chunk cosine similarity among retrieved chunks</text>
+<line x1="362.7" y1="30" x2="362.7" y2="222" stroke="#a8b0bd" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="368.7" y="38" fill="#a8b0bd" font-size="11.5" text-anchor="start">gate at 0.65</text>
+<text x="114.0" y="74" fill="#a8b0bd" font-size="13" text-anchor="end">Answerable</text>
+<text x="114.0" y="90" fill="#6b7482" font-size="11.5" text-anchor="end">at own clearance</text>
+<text x="114.0" y="146" fill="#a8b0bd" font-size="13" text-anchor="end">Denied</text>
+<text x="114.0" y="162" fill="#6b7482" font-size="11.5" text-anchor="end">internal user</text>
+<g tabindex="0"><title>q09: similarity 0.681</title><circle cx="399.1" cy="78" r="13" fill="transparent"/><circle cx="399.1" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q08: similarity 0.693</title><circle cx="413.1" cy="78" r="13" fill="transparent"/><circle cx="413.1" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q02: similarity 0.705</title><circle cx="427.1" cy="78" r="13" fill="transparent"/><circle cx="427.1" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q07: similarity 0.756</title><circle cx="487.0" cy="78" r="13" fill="transparent"/><circle cx="487.0" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q12: similarity 0.787</title><circle cx="523.3" cy="78" r="13" fill="transparent"/><circle cx="523.3" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q11: similarity 0.793</title><circle cx="530.2" cy="78" r="13" fill="transparent"/><circle cx="530.2" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q04: similarity 0.814</title><circle cx="555.1" cy="78" r="13" fill="transparent"/><circle cx="555.1" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q05: similarity 0.838</title><circle cx="583.4" cy="78" r="13" fill="transparent"/><circle cx="583.4" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q10: similarity 0.851</title><circle cx="598.7" cy="78" r="13" fill="transparent"/><circle cx="598.7" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q01: similarity 0.856</title><circle cx="603.8" cy="78" r="13" fill="transparent"/><circle cx="603.8" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q06: similarity 0.856</title><circle cx="604.1" cy="78" r="13" fill="transparent"/><circle cx="604.1" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q03: similarity 0.858</title><circle cx="606.2" cy="78" r="13" fill="transparent"/><circle cx="606.2" cy="78" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<text x="399.1" y="64" fill="#6b7482" font-size="11.5" text-anchor="middle">q09 0.68</text>
+<g tabindex="0"><title>q08: similarity 0.518, refused</title><circle cx="207.9" cy="150" r="13" fill="transparent"/><circle cx="207.9" cy="150" r="6" fill="#e8682e" stroke="#0e1014" stroke-width="2"/></g>
+<text x="207.9" y="176" fill="#a8b0bd" font-size="11.5" text-anchor="middle">q08</text>
+<text x="207.9" y="191" fill="#6b7482" font-size="11.5" text-anchor="middle">refused</text>
+<g tabindex="0"><title>q07: similarity 0.597, wrong answer</title><circle cx="300.7" cy="150" r="13" fill="transparent"/><circle cx="300.7" cy="150" r="6" fill="#e8682e" stroke="#0e1014" stroke-width="2"/></g>
+<text x="300.7" y="176" fill="#a8b0bd" font-size="11.5" text-anchor="middle">q07</text>
+<text x="300.7" y="191" fill="#6b7482" font-size="11.5" text-anchor="middle">wrong answer</text>
+<g tabindex="0"><title>q10: similarity 0.693, wrong answer</title><circle cx="413.0" cy="150" r="13" fill="transparent"/><circle cx="413.0" cy="150" r="6" fill="#e8682e" stroke="#0e1014" stroke-width="2"/></g>
+<text x="413.0" y="176" fill="#a8b0bd" font-size="11.5" text-anchor="middle">q10</text>
+<text x="413.0" y="191" fill="#6b7482" font-size="11.5" text-anchor="middle">wrong answer</text>
+</svg>
+<svg class="chart-narrow" viewBox="0 0 340 250" role="img" aria-labelledby="relv-title-narrow relv-desc-narrow" style="width:100%;height:auto;font-family:Inter,system-ui,sans-serif">
+<title id="relv-title-narrow">Retrieval relevance: answerable versus denied questions</title>
+<desc id="relv-desc-narrow">Answerable questions, at their own clearance, score between 0.68 and 0.86. Denied questions score q07 0.60, q08 0.52, q10 0.69. A gate at 0.65 blocks q07 and q08 but not q10, which overlaps the allowed range.</desc>
+<line x1="110.9" y1="44" x2="110.9" y2="212" stroke="#2f3542" stroke-width="1"/>
+<text x="110.9" y="230" fill="#6b7482" font-size="11.5" text-anchor="middle">0.5</text>
+<line x1="164.7" y1="44" x2="164.7" y2="212" stroke="#2f3542" stroke-width="1"/>
+<text x="164.7" y="230" fill="#6b7482" font-size="11.5" text-anchor="middle">0.6</text>
+<line x1="218.4" y1="44" x2="218.4" y2="212" stroke="#2f3542" stroke-width="1"/>
+<text x="218.4" y="230" fill="#6b7482" font-size="11.5" text-anchor="middle">0.7</text>
+<line x1="272.2" y1="44" x2="272.2" y2="212" stroke="#2f3542" stroke-width="1"/>
+<text x="272.2" y="230" fill="#6b7482" font-size="11.5" text-anchor="middle">0.8</text>
+<line x1="326.0" y1="44" x2="326.0" y2="212" stroke="#2f3542" stroke-width="1"/>
+<text x="326.0" y="230" fill="#6b7482" font-size="11.5" text-anchor="middle">0.9</text>
+<text x="205.0" y="248" fill="#6b7482" font-size="11.5" text-anchor="middle">Best query-to-chunk similarity</text>
+<line x1="191.6" y1="30" x2="191.6" y2="212" stroke="#a8b0bd" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="197.6" y="38" fill="#a8b0bd" font-size="11.5" text-anchor="start">gate at 0.65</text>
+<text x="70.0" y="68" fill="#a8b0bd" font-size="12.5" text-anchor="end">Answerable</text>
+<text x="70.0" y="84" fill="#6b7482" font-size="11.5" text-anchor="end">12 qs</text>
+<text x="70.0" y="140" fill="#a8b0bd" font-size="12.5" text-anchor="end">Denied</text>
+<text x="70.0" y="156" fill="#6b7482" font-size="11.5" text-anchor="end">3 qs</text>
+<g tabindex="0"><title>q09: similarity 0.681</title><circle cx="208.3" cy="72" r="13" fill="transparent"/><circle cx="208.3" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q08: similarity 0.693</title><circle cx="214.7" cy="72" r="13" fill="transparent"/><circle cx="214.7" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q02: similarity 0.705</title><circle cx="221.1" cy="72" r="13" fill="transparent"/><circle cx="221.1" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q07: similarity 0.756</title><circle cx="248.5" cy="72" r="13" fill="transparent"/><circle cx="248.5" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q12: similarity 0.787</title><circle cx="265.2" cy="72" r="13" fill="transparent"/><circle cx="265.2" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q11: similarity 0.793</title><circle cx="268.3" cy="72" r="13" fill="transparent"/><circle cx="268.3" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q04: similarity 0.814</title><circle cx="279.7" cy="72" r="13" fill="transparent"/><circle cx="279.7" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q05: similarity 0.838</title><circle cx="292.7" cy="72" r="13" fill="transparent"/><circle cx="292.7" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q10: similarity 0.851</title><circle cx="299.7" cy="72" r="13" fill="transparent"/><circle cx="299.7" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q01: similarity 0.856</title><circle cx="302.1" cy="72" r="13" fill="transparent"/><circle cx="302.1" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q06: similarity 0.856</title><circle cx="302.2" cy="72" r="13" fill="transparent"/><circle cx="302.2" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<g tabindex="0"><title>q03: similarity 0.858</title><circle cx="303.2" cy="72" r="13" fill="transparent"/><circle cx="303.2" cy="72" r="6" fill="#3d8ef0" stroke="#0e1014" stroke-width="2"/></g>
+<text x="208.3" y="58" fill="#6b7482" font-size="11.5" text-anchor="middle">q09 0.68</text>
+<g tabindex="0"><title>q08: similarity 0.518, refused</title><circle cx="120.6" cy="144" r="13" fill="transparent"/><circle cx="120.6" cy="144" r="6" fill="#e8682e" stroke="#0e1014" stroke-width="2"/></g>
+<text x="120.6" y="170" fill="#a8b0bd" font-size="11.5" text-anchor="middle">q08</text>
+<text x="120.6" y="185" fill="#6b7482" font-size="11.5" text-anchor="middle">refused</text>
+<g tabindex="0"><title>q07: similarity 0.597, wrong answer</title><circle cx="163.2" cy="144" r="13" fill="transparent"/><circle cx="163.2" cy="144" r="6" fill="#e8682e" stroke="#0e1014" stroke-width="2"/></g>
+<text x="163.2" y="170" fill="#a8b0bd" font-size="11.5" text-anchor="middle">q07</text>
+<text x="163.2" y="185" fill="#6b7482" font-size="11.5" text-anchor="middle">wrong</text>
+<g tabindex="0"><title>q10: similarity 0.693, wrong answer</title><circle cx="214.6" cy="144" r="13" fill="transparent"/><circle cx="214.6" cy="144" r="6" fill="#e8682e" stroke="#0e1014" stroke-width="2"/></g>
+<text x="214.6" y="170" fill="#a8b0bd" font-size="11.5" text-anchor="middle">q10</text>
+<text x="214.6" y="185" fill="#6b7482" font-size="11.5" text-anchor="middle">wrong</text>
+</svg>
+      <figcaption>Best question-to-chunk similarity for the 12 answerable questions, each at its required clearance (blue), and the 3 confidential-only questions asked at internal clearance (orange). Hover a dot for its value.</figcaption>
+    </figure>
+    <details class="data-table">
+      <summary>Chart data as a table</summary>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Question</th><th>Group</th><th>Similarity</th></tr></thead>
+          <tbody>
+            <tr><td>q08</td><td>Above clearance</td><td class="num">0.518</td></tr>
+            <tr><td>q07</td><td>Above clearance</td><td class="num">0.597</td></tr>
+            <tr><td>q09</td><td>Allowed</td><td class="num">0.681</td></tr>
+            <tr><td>q10</td><td>Above clearance</td><td class="num">0.693</td></tr>
+            <tr><td>q08</td><td>Allowed</td><td class="num">0.693</td></tr>
+            <tr><td>q02</td><td>Allowed</td><td class="num">0.705</td></tr>
+            <tr><td>q07</td><td>Allowed</td><td class="num">0.756</td></tr>
+            <tr><td>q12</td><td>Allowed</td><td class="num">0.787</td></tr>
+            <tr><td>q11</td><td>Allowed</td><td class="num">0.793</td></tr>
+            <tr><td>q04</td><td>Allowed</td><td class="num">0.814</td></tr>
+            <tr><td>q05</td><td>Allowed</td><td class="num">0.838</td></tr>
+            <tr><td>q10</td><td>Allowed</td><td class="num">0.851</td></tr>
+            <tr><td>q01</td><td>Allowed</td><td class="num">0.856</td></tr>
+            <tr><td>q06</td><td>Allowed</td><td class="num">0.856</td></tr>
+            <tr><td>q03</td><td>Allowed</td><td class="num">0.858</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <p>A gate at 0.65, applied after the fact (I chose it by looking at this data; the agent never ran with it), would have refused the lodging-cap answer without refusing any answerable question: none scores below 0.68. The revenue question was already refused, so the gate changes one answer. The suspicious-activity question is a different story. Its accessible context includes topically close text about reporting deadlines, so its best question-to-chunk similarity is 0.69, level with legitimate questions. That same context supplied the wrong deadline. Any threshold that blocks it also blocks real answers.</p>
+    <p><b>Here, the one plausible wrong answer was exactly the one the similarity score could not separate.</b> One case is not a rule, but it is the failure I would expect to grow on a real corpus, where topics blur. With 15 data points I would not ship any threshold anyway; this shows the shape of the problem, not a calibrated value.</p>
+    <p>One more correction to my earlier write-up: I had rejected the similarity gate entirely, because the denied questions appeared to reach 0.79. That 0.79 was the mislabelled vendor question. With the label fixed, the honest conclusion is narrower: a gate catches the obvious miss and not the subtle one.</p>
+
+    <h2>What I would do in production</h2>
+    <ul>
+      <li><b>Enforce access once, at the data layer, and test it as an invariant.</b> In this build the dense search filters inside the vector store and the keyword search filters in application code. Both work, but the rule now lives in two places that must stay in sync. One enforcement point, plus a "zero leaks" test in CI, is the version that survives an audit.</li>
+      <li><b>Check each citation against the sentence it supports.</b> Grounding against the whole context let a wrong citation through. Checking the answer against the specific chunk it cites is cheap with the NLI model already in the pipeline.</li>
+      <li><b>Check relevance, not only groundedness.</b> The next guardrail should ask whether the answer addresses the question: a question about a transaction amount should not get an answer about lodging. I have not built this yet, so treat it as the next experiment, not a result.</li>
+      <li><b>Decide what a refusal reveals.</b> "That is in a document you cannot access" is more useful than a wrong answer, but it confirms the document exists. That is a product and security decision, not a modelling one, and it should be made explicitly.</li>
+      <li><b>Read the answers, not just the counts.</b> One of my three "confabulations" was correct, and one wrong answer carried a wrong citation. Aggregate metrics hid the eval bug, the citation bug and the real failure mode.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li><b>A tiny evaluation.</b> 16 questions, and only 3 that truly test the under-clearance case. This is a case study, not a rate.</li>
+      <li><b>Synthetic documents.</b> Ten short, well-separated documents make retrieval easy: the chosen configuration scores 1.0 on every retrieval metric, and all six configurations tested reach hit@1 of 1.0. Real corpora will blur topics further, which makes the plausible-wrong-answer problem worse, not better.</li>
+      <li><b>One small model, re-run on CPU.</b> The re-run reproduced the saved counts (one refusal, three answers), but exact wording can vary between runs and hardware.</li>
+    </ul>
+
+    <div class="post-foot">
+      <p>Code, corpus and gold set: <a href="https://github.com/trohit920/agentic-rag-guardrails">github.com/trohit920/agentic-rag-guardrails</a>. Previous post: <a href="/blog/llm-uncertainty-free-signal/">The free uncertainty signal kept up with the expensive one</a>.</p>
+      <p><a href="/blog/">&larr; All posts</a></p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
+</footer>
+</body>
+</html>
