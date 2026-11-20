@@ -494,20 +494,20 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <p>Real-time DMS/OMS inferring eleven signals — drowsiness, distraction, gaze zone, yawning, phone use, drinking, smoking, seatbelt, glasses, cap, and occupant count — from a single camera feed.</p>
         <div class="kpis">
           <div class="kpi"><b>11</b><span>signals from one camera feed</span></div>
-          <div class="kpi"><b>7.4 ms</b><span>per frame on CPU, ~135 FPS</span></div>
-          <div class="kpi"><b>6–10×</b><span>slower under INT8, not faster</span></div>
+          <div class="kpi"><b>7.4 ms</b><span>face detector plus both classifiers, fp32 on CPU</span></div>
+          <div class="kpi"><b>6–11×</b><span>slower under dynamic INT8, not faster</span></div>
         </div>
         <ul>
           <li>Fuses ONNX face detection, 98-point landmarks, 6DRepNet head pose, L2CS gaze, EAR/MAR/PERCLOS geometry, and localized YOLO detectors into one temporally-smoothed state.</li>
-          <li>Found the phone classifier firing at <b>p90 ≈ 0.99 on a clip containing no phone</b> — a whole-image head has no concept of absence. Moved object-like classes to localized detectors, keeping classifiers only for genuine face attributes and geometry for yawn.</li>
-          <li>INT8 turned out to be a <b>size win and a speed loss</b> — dequantization overhead swamps a MobileNetV3's tiny convolutions. So fp32 ships where compute is the constraint and INT8 only where flash and RAM are, with the benchmark script in the repo instead of a claim.</li>
-          <li>Driver-ROI scheduling runs detectors on ~half the pixels (<b>141/145 frames ROI-only</b>) with periodic full-frame sweeps to recount occupants; one consolidated YOLOv8n covers three classes in a single inference to keep the SoC budget flat.</li>
+          <li>A phone head scored <b>p90 ≈ 0.99 on a clip containing no phone</b>; rereading the code showed it had likely never seen a phone label. Object-like classes moved to localized detectors, keeping classifiers only for genuine face attributes and geometry for yawn.</li>
+          <li>Dynamic INT8 turned out to be a <b>size win and a speed loss</b>: 3.6× smaller, but the per-call quantization overhead likely swamps a MobileNetV3's tiny convolutions. So fp32 ships where compute is the constraint and INT8 only where flash and RAM are, with the benchmark script in the repo instead of a claim.</li>
+          <li>Driver-ROI scheduling runs detectors on ~half the pixels, with periodic full-frame sweeps to recount occupants; one consolidated YOLOv8n covers three classes in a single inference to keep the SoC budget flat.</li>
         </ul>
         <div class="tags">
           <span class="tag">Object detection</span><span class="tag">INT8</span>
           <span class="tag">Head pose &amp; gaze</span><span class="tag">Multi-task learning</span><span class="tag">PERCLOS</span>
         </div>
-        <p class="src"><a href="https://github.com/trohit920/cabinsense">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/cabinsense">View source →</a> &nbsp;&middot;&nbsp; <a href="blog/int8-slower-edge-dms/">Read the write-up →</a></p>
       </article>
 
       <article class="card reveal" style="--c:var(--violet);--c-rgb:var(--violet-rgb)">
@@ -551,20 +551,20 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <p>The streaming content-discovery stack end to end on MovieLens-1M — candidate generation, learning-to-rank, bandit re-ranking, cold start, and search — built to find out which stage the wins actually come from.</p>
         <div class="kpis">
           <div class="kpi"><b>2.3×</b><span>NDCG@10 over the popularity baseline</span></div>
-          <div class="kpi"><b>+12%</b><span>more NDCG@10 from the ranker</span></div>
-          <div class="kpi"><b>67×</b><span>the latency that ranker costs</span></div>
+          <div class="kpi"><b>+12%</b><span>more NDCG@10 from the second stage</span></div>
+          <div class="kpi"><b>67×</b><span>the median latency that stage costs</span></div>
         </div>
         <ul>
-          <li><b>Retrieval does the heavy lifting</b>, and it also widens the catalogue: coverage goes 0.08 → 0.74 of all titles. A logQ correction on the in-batch negatives — which otherwise punish popular items for being popular — more than doubled Recall@10 (0.033 → 0.085).</li>
-          <li>The ranker's 12% costs <b>7.3 ms</b>: retrieval alone answers in 0.11 ms p50, the full two-stage request in 7.4 ms. That trade is the actual engineering decision — worth paying on a homepage, not on typeahead.</li>
-          <li>The ranker's strongest feature by gain was neither popularity nor any embedding score — it was <b>how many retrievers independently surfaced the same item</b>. LinUCB, meanwhile, tied the greedy ranker on offline replay (<b>0.387 vs 0.388</b>): a bandit cannot prove itself against a static log, so it ships behind the replay estimator rather than a chart pretending otherwise.</li>
+          <li><b>Retrieval does the heavy lifting</b>, and it also widens the catalogue: coverage@20 goes 0.08 → 0.74 of all titles. A logQ correction on the in-batch negatives counters their bias against popular items.</li>
+          <li>The second stage (a sequence retriever, feature building and a LambdaMART ranker) adds 12% for <b>7.3 ms</b>: retrieval alone answers in 0.11 ms p50, the full two-stage request in 7.4 ms. That trade is the actual engineering decision: worth paying on a homepage row, not on a latency-critical surface.</li>
+          <li>The ranker's top feature by gain, how many retrievers surfaced an item, <b>appears to be partly an artifact</b>: training pools inserted the answer whenever retrieval missed it, which gives the answer a recognisable fingerprint. The same planted pools make the offline bandit replay uninformative, so LinUCB is not claimed as a win.</li>
           <li>Cold start via bge content embeddings (a brand-new title is retrievable with zero interactions), hybrid dense + BM25 search fused by RRF (28 ms p50), MMR diversity (intra-list similarity 0.45 → 0.41), PSI drift monitoring, and FastAPI serving — with Spark/Airflow/Kubernetes scale-out documented rather than stubbed.</li>
         </ul>
         <div class="tags">
           <span class="tag">Two-tower retrieval</span><span class="tag">LambdaMART</span>
           <span class="tag">Contextual bandits</span><span class="tag">NDCG</span><span class="tag">Hybrid search</span>
         </div>
-        <p class="src"><a href="https://github.com/trohit920/streamrec">View source →</a></p>
+        <p class="src"><a href="https://github.com/trohit920/streamrec">View source →</a> &nbsp;&middot;&nbsp; <a href="blog/recommender-wins-retrieval/">Read the write-up →</a></p>
       </article>
 
       <article class="card reveal" style="--c:var(--orange);--c-rgb:var(--orange-rgb)">
@@ -595,20 +595,20 @@ footer .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
         <p>A free satirical fighting game about Indian politics that runs in the browser, taken from idea to live product with automatic deploys and English and Hindi trailers generated from real gameplay.</p>
         <div class="kpis">
           <div class="kpi"><b>12</b><span>3D fighters generated from commissioned caricatures on a 6 GB GPU</span></div>
-          <div class="kpi"><b>~3,850</b><span>tests on a deterministic 60 Hz simulation core</span></div>
-          <div class="kpi"><b>1.5 MB</b><span>whole site; 150-260 KB per fighter</span></div>
+          <div class="kpi"><b>~3,850</b><span>tests, 1,778 on the deterministic 60 Hz simulation core</span></div>
+          <div class="kpi"><b>~1.2 MB</b><span>of code and assets; 150-260 KB per fighter</span></div>
         </div>
         <ul>
           <li><b>Model selection under hard constraints:</b> Hunyuan3D's licence excludes South Korea and TRELLIS needs 16+ GB with a non-commercial rasteriser, so SF3D was chosen and tested head to head against SPAR3D.</li>
-          <li>A <b>one-variable experiment</b> found that white-background inputs turn flat cut-outs into round 3D bodies, fixing 9 of 12 fighters without touching the model or the art.</li>
-          <li>"Floating fighters" were traced by <b>measuring skinned meshes per pose</b>: a floor clearance meant for knocked-down bodies was applied while standing. Fixed with a tilt-scaled clearance and tests.</li>
+          <li>A <b>one-variable experiment</b> found that white-background inputs turn flat cut-outs into round 3D bodies; 9 of 12 fighters were rebuilt that way without touching the model or the art.</li>
+          <li>"Floating fighters" were traced by <b>measuring skinned meshes per pose</b>: a floor clearance meant for knocked-down bodies was applied while standing. Fixed with a tilt-scaled clearance and tests; 11 of 12 now sit within the floor band.</li>
           <li><b>Led delivery with AI coding agents</b> the way I run a team: written briefs, acceptance gates, independent review, and nothing shipped without passing tests and verified screenshots.</li>
         </ul>
         <div class="tags">
           <span class="tag">Image-to-3D</span><span class="tag">Auto-skinning</span>
           <span class="tag">Deterministic simulation</span><span class="tag">CI/CD</span><span class="tag">AI-augmented delivery</span>
         </div>
-        <p class="src"><a href="https://kursikushti.pages.dev">Play it live →</a></p>
+        <p class="src"><a href="https://kursikushti.pages.dev">Play it live →</a> &nbsp;&middot;&nbsp; <a href="blog/leading-ai-augmented-build/">Read the write-up →</a></p>
       </article>
     </div>
   </div>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>INT8 made my models 6 to 11 times slower — Rohit Thakur</title>
+<meta name="description" content="Dynamic INT8 quantization in ONNX Runtime made two small MobileNetV3-Small classifiers 3.6 times smaller and 6 to 11 times slower on CPU. For backbones this small, dynamic INT8 is a size decision first, and its speed has to be measured.">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="INT8 made my models 6 to 11 times slower: dynamic quantization on a tiny edge backbone">
+<meta property="og:description" content="Two MobileNetV3-Small driver-monitoring classifiers got 3.6x smaller and 6 to 11 times slower after dynamic INT8 quantization in ONNX Runtime on CPU.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://trohit920.github.io/blog/int8-slower-edge-dms/">
+<link rel="canonical" href="https://trohit920.github.io/blog/int8-slower-edge-dms/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">rohit<span>.</span>thakur</a>
+    <div class="navlinks">
+      <a href="/#projects">Projects</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="read wrap">
+    <div class="eyebrow">Edge inference &middot; Quantization &middot; Driver monitoring</div>
+    <h1>INT8 made my models 6 to 11 times slower</h1>
+    <p class="byline">Rohit Thakur &middot; <time datetime="2026-11-20">20 November 2026</time> &middot; 6 min read</p>
+
+    <p class="lede">I quantized two small vision models to INT8 for an in-cabin driver-monitoring project, expecting them to get faster. They got 3.6 times smaller and between 6 and 11 times slower on CPU. The quantization did what dynamic mode does. My assumption about what it was for did not.</p>
+
+    <h2>The question</h2>
+    <p>Does INT8 quantization make a small edge CNN faster on CPU, or only smaller?</p>
+
+    <h2>The setup</h2>
+    <ul>
+      <li><b>Project:</b> CabinSense, a local driver and occupant monitoring system that produces eleven signals from one camera (drowsiness, distraction, gaze zone, yawning, phone use, drinking, smoking, seatbelt, glasses, cap and occupant count).</li>
+      <li><b>Models quantized:</b> two classifiers on the same MobileNetV3-Small backbone (<code>mobilenetv3_small_100</code> from timm), taking a 128&times;128 RGB face crop: a two-class drowsiness model and a multi-task face-attribute model. Both are exported to ONNX (opset 17) with a fixed input shape of 1&times;3&times;128&times;128.</li>
+      <li><b>Quantization:</b> ONNX Runtime's <code>quantize_dynamic</code> with <code>weight_type=QInt8</code> and otherwise default settings. Dynamic mode, not static QDQ: no calibration data.</li>
+      <li><b>Measurement:</b> ONNX Runtime with <code>CPUExecutionProvider</code>, the only provider recorded in the results. Random float input at the model's shape, 5 warm-up runs, then 100 timed calls to <code>session.run</code>. I report the median, the 95th percentile and file size. Default session options, one run per model.</li>
+      <li><b>Hardware:</b> one development CPU. The results file does not record the CPU model, thread count or ONNX Runtime version, which I regret now. No GPU was involved.</li>
+    </ul>
+    <p>Code, benchmark script and saved results: <a href="https://github.com/trohit920/cabinsense">cabinsense</a>.</p>
+
+    <h2>The result</h2>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Model (MobileNetV3-Small, 128&times;128)</th><th>fp32 median</th><th>INT8 median</th><th>Slowdown</th><th>fp32 size</th><th>INT8 size</th></tr></thead>
+        <tbody>
+          <tr><td>Drowsiness classifier</td><td class="num">2.07 ms<span class="sub">p95 4.13 ms</span></td><td class="num">13.22 ms<span class="sub">p95 20.78 ms</span></td><td class="num">6.4&times;</td><td class="num">6.09 MB</td><td class="num">1.70 MB</td></tr>
+          <tr><td>Multi-task attributes</td><td class="num">1.47 ms<span class="sub">p95 2.20 ms</span></td><td class="num">15.71 ms<span class="sub">p95 23.98 ms</span></td><td class="num">10.7&times;</td><td class="num">6.11 MB</td><td class="num">1.71 MB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Slowdown is the ratio of medians. Both models shrank by a factor of 3.6, about 4.4 MB each. The p95 ratios agree: 5.0&times; and 10.9&times;.</p>
+    <p>To see what that means for a frame, add the face detector (YuNet, 3.82 ms median in the same run). Treat that figure as indicative: the benchmark timed the YuNet graph through ONNX Runtime on random input at a fixed shape, while the pipeline runs it through OpenCV's <code>FaceDetectorYN</code> at frame size. With fp32 classifiers the three models sum to about 7.4 ms, roughly 135 frames per second. With INT8 classifiers they sum to about 32.7 ms. A 30 FPS camera gives you 33.3 ms per frame, so the INT8 variants would spend almost the whole budget before landmarks, head pose, gaze or the object detectors run. These are sums of medians measured one model at a time, not an end-to-end pipeline measurement.</p>
+
+    <h2>Why it got slower</h2>
+    <p><b>What the evidence establishes.</b> The quantization was dynamic. The file sizes dropped 3.6 times, so the weights really were stored as int8. The fp32 models were already very fast: 1.5 to 2 ms per call. And the INT8 versions were slower on the same CPU provider, in the same script, on random input of the same shape.</p>
+    <p><b>What it does not establish.</b> I did not save a profile of either graph, so I cannot tell you which operators got slower, or how many of them were quantized. The gap between 6.4&times; and 10.7&times; comes from a single run of two nearly identical graphs, so I would not read anything into it. The finding that holds is roughly an order of magnitude.</p>
+    <div class="callout">
+      <p><b>The likely explanation, not measured here:</b> in dynamic mode, weights are converted to int8 once, ahead of time, but the scale for each activation is computed at run time, on every call. So each quantized convolution gains extra work around it: quantize the incoming activation, run an integer convolution, rescale the result back to float. MobileNetV3-Small at 128&times;128 is a stack of many small convolutions, so that fixed per-operator cost is never paid back by faster arithmetic. It becomes the runtime. A second likely factor is that the integer path does not get the fused, tuned fp32 convolution kernels the CPU provider uses for the original graph.</p>
+    </div>
+    <p>"INT8 is faster" is an intuition from large models, where the arithmetic dominates. At this size the overhead likely dominates. To confirm it, the next run would turn on ONNX Runtime's profiler for both graphs and compare time per operator type.</p>
+
+    <h2>The same mistake in a different place</h2>
+    <p>The same project produced a second case of trusting an assumption I had not checked. The multi-task model originally had a phone head. On a clip with no phone in it, my write-up records that head's 90th-percentile score as about 0.99. (That figure lives in the report; I did not keep the raw per-frame log.) The lesson I drew at the time: a whole-image classifier has no concept of absence. So phone and drinking moved to a COCO-pretrained YOLOv8n, and smoking, seatbelt and cap to one consolidated YOLOv8n fine-tuned on merged open detection sets.</p>
+    <p>Rereading the code for this post, I found a blunter reason. The multi-task training script trains on CelebA for glasses and cap only, and masks the phone head out of the loss. The saved evaluation shows zero phone examples. If the checkpoint behind that number matches the current script, the head never saw a phone label. The absence argument still holds for a properly trained head, but my observation cannot support it; what it shows is that an untrained head can sound confident. The config still lists phone among the trained attributes, another stale artifact.</p>
+
+    <h2>What I would do in production</h2>
+    <p><b>Keep fp32 for these two models on CPU, which is what the runtime already loads, and treat INT8 as a size option that has to earn its place.</b> The trade-off is concrete: fp32 costs about 8.8 MB more storage across the two models, and in return gives back about 25 ms of every 33 ms frame.</p>
+    <ul>
+      <li><b>Fix the manifest and the docs.</b> The Python runtime loads the fp32 files, but the deployment manifest, the contract a C++ port would follow, still points at the <code>*.int8.onnx</code> files. The quantization module's docstring and the deployment guide still describe dynamic INT8 as faster on CPU. The benchmark contradicts the manifest and the docs.</li>
+      <li><b>Try static QDQ quantization next.</b> It computes activation scales ahead of time from a calibration set, which removes the per-call scale computation. It needs a few hundred representative cabin frames, and it is a hypothesis until benchmarked.</li>
+      <li><b>Benchmark on the target, not the development machine.</b> On a GPU or NPU, fp16 through the vendor's execution provider is the more likely win.</li>
+      <li><b>Gate the release on the benchmark.</b> If the variant in the manifest is slower than its fp32 baseline on the target, the build should fail.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li><b>One run on one unrecorded CPU.</b> 100 timed iterations per model, random input, default threading. The direction is clear; the exact ratios are not portable.</li>
+      <li><b>Accuracy after quantization was not measured.</b> The parity check compares PyTorch with the fp32 ONNX models only. I do not know what INT8 did to accuracy.</li>
+      <li><b>Partial latency coverage.</b> Only YuNet and the two classifiers were benchmarked. The PFLD landmark model is ONNX and required, but it is not in the results; head pose, gaze and both YOLO detectors run in PyTorch and are also excluded. So the 7.4 ms figure covers detection plus the two classifiers, not the full face path.</li>
+      <li><b>The phone number has no saved log.</b> Treat it as an observation from one clip, not a measured false-positive rate. The project's demo uses public dashcam-style footage to exercise the pipeline, not to score it.</li>
+    </ul>
+
+    <div class="post-foot">
+      <p>Code, benchmark script and saved results: <a href="https://github.com/trohit920/cabinsense">github.com/trohit920/cabinsense</a>. Previous post: <a href="/blog/rag-access-control-wrong-answers/">Zero leaks, two wrong answers</a>.</p>
+      <p><a href="/blog/">&larr; All posts</a></p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI delivery under SAFe — Rohit Thakur</title>
+<meta name="description" content="SAFe was built for feature delivery, where the work is known and the risk is in execution. Model delivery is the other way round. What I would keep from it for an AI team, and what I would drop.">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="Running AI delivery under SAFe: what I'd keep and what I'd drop">
+<meta property="og:description" content="Planning frameworks assume you know what done looks like. Model work often doesn't, until the experiment is run.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://trohit920.github.io/blog/ai-delivery-under-safe/">
+<link rel="canonical" href="https://trohit920.github.io/blog/ai-delivery-under-safe/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">rohit<span>.</span>thakur</a>
+    <div class="navlinks">
+      <a href="/#projects">Projects</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="read wrap">
+    <div class="eyebrow">Engineering management &middot; Delivery</div>
+    <h1>Running AI delivery under SAFe: what I'd keep and what I'd drop</h1>
+    <p class="byline">Rohit Thakur &middot; <time datetime="2026-11-20">20 November 2026</time> &middot; 5 min read</p>
+
+    <p class="lede">For three years at OpenSysNet I ran AI delivery inside the Scaled Agile Framework (SAFe): railway pantograph monitoring, sorting-robot vision and industrial time-series models. SAFe was designed for feature delivery, where the work is mostly known and the risk is in execution. Model delivery is the other way round. Here is what I would keep and what I would change if I set up delivery for an AI team again.</p>
+
+    <h2>The question</h2>
+    <p>Can a planning framework that rewards predictable commitments work for a kind of engineering where you often do not know whether something is possible until you have tried it?</p>
+    <p>My answer is yes, if you are clear about which parts of the work are predictable and which are not, and you plan them differently.</p>
+
+    <h2>Two kinds of work in one backlog</h2>
+    <p>An AI team's backlog mixes two kinds of item that look alike on a board:</p>
+    <ul>
+      <li><b>Engineering work:</b> data pipelines, labelling tools, export to the edge runtime, integration with the camera or PLC, monitoring. This behaves like any other software. It can be sized, committed to and delivered.</li>
+      <li><b>Experiments:</b> "can a detector reach the accuracy we need on this camera, at this frame rate, on this hardware?" Nobody can size that honestly, because the answer is the point of doing it.</li>
+    </ul>
+    <p>Most of the friction I would expect between SAFe and an ML team comes from treating the second kind like the first.</p>
+
+    <h2>What I would keep</h2>
+    <ul>
+      <li><b>PI planning, for dependencies.</b> The things that block ML work are rarely inside the team: access to the target hardware, a site visit to collect footage, labelling capacity, a field-test window. A planning event every few months, where those dependencies are put on one board with dates and owners, is the most useful part of the framework for an AI team.</li>
+      <li><b>System demos.</b> A model that only exists as a metric in a notebook is not done. Demoing it running end to end, on the real input and ideally the real hardware, every iteration, surfaces integration problems early, while they are still cheap.</li>
+      <li><b>A shared definition of done.</b> SAFe pushes teams to agree what "done" means. For models, that agreement is worth more than in most software, because "the model works" means very different things to a researcher, an integrator and a customer.</li>
+      <li><b>Inspect and adapt.</b> A regular, structured look back is where a team notices that its evaluation set no longer matches what the field is sending it.</li>
+    </ul>
+
+    <h2>What I would change or drop</h2>
+    <ul>
+      <li><b>Committing to accuracy targets as if they were features.</b> "Reach a given mAP by the end of the PI" is a guess written as a promise. I would commit to the experiment instead: the question, the data, the time box, and the decision that each possible answer leads to.</li>
+      <li><b>Story points for research.</b> Sizing an experiment produces a number that looks like information and is not. Time boxes are more honest: two weeks to find out, then decide.</li>
+      <li><b>Velocity as the headline metric for an AI team.</b> Velocity measures how much planned work was finished. A team that runs a quick experiment, learns the approach will not work and stops has done something valuable that velocity scores as nothing. I would track decisions made and models that pass the definition of done.</li>
+      <li><b>Heavy ceremony around small teams.</b> A small ML team inside a large train can spend a lot of its time in events designed for many teams. Attend the events where dependencies are decided; delegate or skip the rest.</li>
+    </ul>
+
+    <h2>A definition of done for a model</h2>
+    <p>If I had to keep only one practice, it would be an explicit definition of done that a model must pass before it counts as delivered. Mine would have four gates:</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Gate</th><th>Question it answers</th></tr></thead>
+        <tbody>
+          <tr><td>Held-out metric</td><td>Does it meet the agreed threshold on a frozen test set it never trained or tuned on?</td></tr>
+          <tr><td>Target benchmark</td><td>Does it meet the latency and memory budget on the hardware it ships on, not the development machine?</td></tr>
+          <tr><td>Failure review</td><td>Has someone looked at the worst errors one by one and accepted them?</td></tr>
+          <tr><td>Field check</td><td>Does it behave the same on live input from the real site as on the test set?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Each gate maps to a failure I have since measured in my own projects: <a href="/blog/llm-uncertainty-free-signal/">choosing a signal on test data</a> quietly leaks, <a href="/blog/int8-slower-edge-dms/">an "optimised" model can be slower on the real runtime</a>, and <a href="/blog/rag-access-control-wrong-answers/">aggregate counts hide the failure that matters</a>.</p>
+
+    <h2>The trade-off</h2>
+    <p>Planning experiments as time-boxed questions makes the plan less certain on paper. Stakeholders get "we will know by the end of the iteration" instead of "it will be done by the end of the PI". In exchange, the plan stops making promises the team cannot keep, and the risky questions get answered first, when the answer is still cheap to act on.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li><b>One company, one team, a few years.</b> This is one manager's view, not a study.</li>
+      <li><b>No internal numbers.</b> I have left out project metrics, client details and anything my former employer would not want public.</li>
+      <li><b>SAFe is configured differently everywhere.</b> Much of what I would drop may already be optional where you work.</li>
+    </ul>
+
+    <div class="post-foot">
+      <p>Previous post: <a href="/blog/recommender-wins-retrieval/">Where do recommender wins actually come from?</a> Next: <a href="/blog/one-question-eight-years/">From dashcam ADAS to LLM evaluation: one question for eight years</a>.</p>
+      <p><a href="/blog/">&larr; All posts</a></p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
+</footer>
+</body>
+</html>

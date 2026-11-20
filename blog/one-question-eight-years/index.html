@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One question for eight years — Rohit Thakur</title>
+<meta name="description" content="Dashcam ADAS, edge vision on factory and railway hardware, LLM agents in manufacturing: three jobs that kept asking the same question. When should a model be trusted?">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="From dashcam ADAS to LLM evaluation: one question for eight years">
+<meta property="og:description" content="Three companies, three kinds of model, one question: when should its output be trusted, and how do you know?">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://trohit920.github.io/blog/one-question-eight-years/">
+<link rel="canonical" href="https://trohit920.github.io/blog/one-question-eight-years/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">rohit<span>.</span>thakur</a>
+    <div class="navlinks">
+      <a href="/#projects">Projects</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="read wrap">
+    <div class="eyebrow">Career &middot; Retrospective</div>
+    <h1>From dashcam ADAS to LLM evaluation: one question for eight years</h1>
+    <p class="byline">Rohit Thakur &middot; <time datetime="2026-11-20">20 November 2026</time> &middot; 5 min read</p>
+
+    <p class="lede">I have worked on three very different kinds of model: vision in dashcams, vision and time series on factory and railway hardware, and LLM agents for manufacturing analytics. Looking back, the hard part was the same in all three. Getting a model to produce an output was rarely the problem. Knowing when that output deserved to be acted on was.</p>
+
+    <h2>Pittasoft, 2017 to 2022: an alert is a promise</h2>
+    <p>At Pittasoft I led ADAS development for dashcam products: forward vehicle detection, traffic-light recognition and a Forward Vehicle Start Alarm, the alert that tells you the car ahead has moved off. I also built a driver monitoring system, training YOLO models to detect distraction and drowsiness.</p>
+    <p>A driver-facing alert is a promise. If it fires when nothing happened, the driver learns to ignore it, and then it is worse than useless on the day it is right. Detection accuracy on a test set is only part of the picture; what matters is how the alert behaves over a drive, and whether a person will still believe it the next time.</p>
+    <p>That argues for reading failure cases one by one before trusting any aggregate. Years later, in my own <a href="/blog/int8-slower-edge-dms/">CabinSense</a> project, a phone head that had probably never seen a phone label still scored about 0.99 at the 90th percentile on a clip with no phone in it. A number like that is only worth something once you go and find out why.</p>
+
+    <h2>OpenSysNet, 2022 to 2025: trust on constrained hardware</h2>
+    <p>At OpenSysNet I took on leading the team as well as building, as AI engineering manager, running delivery under SAFe. The projects were edge vision and industrial time series:</p>
+    <ul>
+      <li>Real-time railway pantograph monitoring with YOLOv8 at 95.5% fault-detection accuracy, which won an Innovation Award.</li>
+      <li>A sorting-robot vision pipeline at 99.5% mAP@50 that raised manufacturing efficiency by 20%.</li>
+      <li>LSTM and gradient-boosting models for fan-speed control and energy-anomaly detection, saving 12.3% in energy.</li>
+    </ul>
+    <p>On the edge, trust has a second meaning: will the model still behave the same once it is squeezed onto the hardware it ships on? Every optimisation, whether pruning, quantisation or a smaller backbone, is a change to the model, and needs measuring like one. My <a href="/blog/int8-slower-edge-dms/">INT8 post</a> is a small version of that lesson: on my development CPU the "faster" format turned out to be a size win and a speed loss, and I have not yet measured it on target hardware.</p>
+    <p>Leading a team changes what verification means. You stop checking every line yourself, and you have to decide what evidence you will accept instead: the test, the benchmark, the screenshot, the reviewer who did not write the code.</p>
+
+    <h2>eMoldino, 2025 to now: when the model talks back</h2>
+    <p>At eMoldino I build LLM systems for manufacturing: a production-insight agent on AWS Bedrock and LangGraph over Snowflake data, and an MCP server exposing four analytics tools: ROI, run rate, capacity and cycle-time efficiency. I also built an LLM evaluation suite: more than 210 tests across four modules, using LLM-as-judge and DeepEval for faithfulness, hallucination and answer relevancy.</p>
+    <p>LLMs make the trust question harder in a specific way. A dashcam detector that is wrong is usually wrong in a way you can see. An LLM that is wrong is fluent, formatted and confident. It does not look wrong. Two of my recent posts measure that gap:</p>
+    <ul>
+      <li><a href="/blog/llm-uncertainty-free-signal/">The free uncertainty signal kept up with the expensive one</a>: can the model tell you when it is likely to be wrong, and how much does it cost to ask?</li>
+      <li><a href="/blog/rag-access-control-wrong-answers/">Zero leaks, two wrong answers</a>: a grounded, cited answer can still be the wrong answer.</li>
+    </ul>
+    <p>The same instinct applies outside LLMs. <a href="/blog/recommender-wins-retrieval/">Where do recommender wins actually come from?</a> asks which stage of a recommender earns its latency, and why its top feature appears to be partly an artifact of how I built the training data.</p>
+
+    <h2>What stayed the same</h2>
+    <p>Across the three jobs, a few rules survived every change of model type:</p>
+    <ul>
+      <li><b>Decide what "wrong" costs before choosing a metric.</b> A missed drowsiness event, a false fault on a pantograph and a confident wrong number in a production report are different failures with different prices. The metric should follow the price.</li>
+      <li><b>Keep a baseline next to every result.</b> Most of my surprises came from comparing against the cheap option: the free signal against semantic entropy, retrieval alone against retrieval plus ranker, fp32 against INT8.</li>
+      <li><b>Read the failures, not just the counts.</b> Aggregate metrics hide the eval bug, the label bug and the real failure mode. In the RAG project, one of three "confabulations" was a correct answer with a wrong label.</li>
+      <li><b>Put the rule where it cannot be argued with.</b> If something must never happen, enforce it in the data layer, not in a prompt or a threshold, and test it as an invariant.</li>
+      <li><b>Verification is the job, not a phase.</b> This matters more now that coding agents write much of the code. I wrote about running one such build in <a href="/blog/leading-ai-augmented-build/">Leading an AI-augmented build</a>.</li>
+    </ul>
+
+    <h2>What changed</h2>
+    <p>The models got bigger and the outputs got richer, from a bounding box to a paragraph. The cost of checking went up with them: you can count a missed detection, but judging whether a paragraph is faithful needs another model, and that model needs checking too. The engineering answer has stayed the same, though: measure the system on the decisions it actually makes, against the cheapest credible alternative, and be clear about what you did not test.</p>
+    <p>That is what this blog is for. Each post takes one version of "when should a model be trusted?" and answers it with a measured result, including the parts that did not work.</p>
+
+    <div class="post-foot">
+      <p>Full experience and projects: <a href="/">trohit920.github.io</a>. Previous post: <a href="/blog/ai-delivery-under-safe/">Running AI delivery under SAFe</a></p>
+      <p><a href="/blog/">&larr; All posts</a></p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
+</footer>
+</body>
+</html>

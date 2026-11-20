@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leading an AI-augmented build — Rohit Thakur</title>
+<meta name="description" content="Coding agents wrote most of the code for Kursi Kushti, a live 3D browser fighting game. My job was the brief, the direction, the gates, a rule that a separate agent reviews every change and that disputes are settled by measurement, and the owner-only decisions.">
+<meta name="author" content="Rohit Thakur">
+<meta property="og:title" content="Leading an AI-augmented build: a live 3D game from caricatures to Cloudflare">
+<meta property="og:description" content="Agents wrote most of the code. I owned the brief, the gates and the owner decisions; reviewer agents and measurements did the checking.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://trohit920.github.io/blog/leading-ai-augmented-build/">
+<link rel="canonical" href="https://trohit920.github.io/blog/leading-ai-augmented-build/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">rohit<span>.</span>thakur</a>
+    <div class="navlinks">
+      <a href="/#projects">Projects</a>
+      <a href="/blog/" class="active">Blog</a>
+      <a href="/#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <article class="read wrap">
+    <div class="eyebrow">Engineering leadership &middot; Coding agents &middot; 3D</div>
+    <h1>Leading an AI-augmented build</h1>
+    <p class="byline">Rohit Thakur &middot; <time datetime="2026-11-20">20 November 2026</time> &middot; 6 min read</p>
+
+    <p class="lede">Kursi Kushti is a free satirical fighting game that runs in the browser. Coding agents wrote most of its code. My part was the brief and its later changes of direction, the gates every change had to pass (taken from my own working rules), a requirement that a separate agent review every change and that disputes be settled by measurement, the decisions only the owner could make, and the final check on a real phone. Reviewer agents did the reviews and agents took the measurements. This post is about how that setup worked, because it is the part I can honestly claim.</p>
+
+    <h2>The question</h2>
+    <p>What does leading a build look like when most of the code is written by agents? My answer after this project: much like leading people, with less tolerance for vague instructions. An agent does what the brief says, quickly and confidently, so the brief and the pass condition carry most of the weight.</p>
+
+    <h2>The setup</h2>
+    <ul>
+      <li><b>The product:</b> a 2.5D brawler in TypeScript and three.js, with no server. The rules live in a deterministic core: 60 ticks per second, integer state, a seeded random number generator.</li>
+      <li><b>The team:</b> one written plan split into numbered tasks, an implementer agent per task, a separate reviewer agent, and me as the owner, who saw a demo at the end of each phase and made the calls nobody else should make.</li>
+      <li><b>The timeline:</b> the plan and the first commit landed on 6 November; the game went live on 11 November; the last of 110 commits on <code>main</code> is from 13 November.</li>
+      <li><b>The fighters:</b> 12 of them are 3D models made from commissioned caricature drawings with an image-to-3D model, run locally on a laptop GPU with 6 GB of memory.</li>
+    </ul>
+    <p>The game is live at <a href="https://kursikushti.pages.dev">kursikushti.pages.dev</a>. The repository is private; the numbers below come from its notes, tests and build output.</p>
+
+    <h2>The gates</h2>
+    <p>Every task in the plan ended with the same gate: typecheck, lint and the full test suite pass before a commit. Each phase added a browser check against a written script (load a match, press keys, confirm health drops, save a screenshot) and a demo to me. Later the same gate moved into deployment: a push to <code>main</code> deploys to Cloudflare Pages only after the check and the production build pass.</p>
+    <figure class="chart">
+      <svg class="chart-wide" viewBox="0 0 680 150" role="img" aria-labelledby="gate-title-wide gate-desc-wide" style="width:100%;height:auto;font-family:Inter,system-ui,sans-serif">
+<title id="gate-title-wide">The path from brief to production</title>
+<desc id="gate-desc-wide">Five steps in a row: written brief, agent implements, check (types, lint, tests), browser QA with screenshot and independent review, then push to main which deploys only if check and build pass. A failed gate returns the work to the implementer.</desc>
+<g font-size="12.5" text-anchor="middle">
+<rect x="4" y="34" width="116" height="56" rx="8" fill="none" stroke="#2f3542" stroke-width="1.5"/>
+<text x="62" y="58" fill="#a8b0bd">Written brief</text><text x="62" y="76" fill="#6b7482" font-size="11.5">pass condition</text>
+<rect x="144" y="34" width="116" height="56" rx="8" fill="none" stroke="#2f3542" stroke-width="1.5"/>
+<text x="202" y="58" fill="#a8b0bd">Agent builds</text><text x="202" y="76" fill="#6b7482" font-size="11.5">one task</text>
+<rect x="284" y="34" width="116" height="56" rx="8" fill="none" stroke="#3d8ef0" stroke-width="1.5"/>
+<text x="342" y="58" fill="#a8b0bd">Check</text><text x="342" y="76" fill="#6b7482" font-size="11.5">types, lint, tests</text>
+<rect x="424" y="34" width="116" height="56" rx="8" fill="none" stroke="#3d8ef0" stroke-width="1.5"/>
+<text x="482" y="58" fill="#a8b0bd">Browser QA</text><text x="482" y="76" fill="#6b7482" font-size="11.5">+ separate review</text>
+<rect x="564" y="34" width="112" height="56" rx="8" fill="none" stroke="#3d8ef0" stroke-width="1.5"/>
+<text x="620" y="58" fill="#a8b0bd">Deploy</text><text x="620" y="76" fill="#6b7482" font-size="11.5">check + build first</text>
+</g>
+<g stroke="#6b7482" stroke-width="1.5" fill="none">
+<path d="M120 62 H140"/><path d="M260 62 H280"/><path d="M400 62 H420"/><path d="M540 62 H560"/>
+<path d="M342 90 V118 H202 V94" stroke-dasharray="4 4"/><path d="M482 90 V118 H342" stroke-dasharray="4 4"/>
+</g>
+<text x="272" y="136" fill="#6b7482" font-size="11.5" text-anchor="middle">a failed gate goes back to the implementer</text>
+</svg>
+<svg class="chart-narrow" viewBox="0 0 340 330" role="img" aria-labelledby="gate-title-narrow gate-desc-narrow" style="width:100%;height:auto;font-family:Inter,system-ui,sans-serif">
+<title id="gate-title-narrow">The path from brief to production</title>
+<desc id="gate-desc-narrow">Five steps top to bottom: written brief, agent implements, check, browser QA and separate review, deploy after check and build pass. A failed gate returns to the implementer.</desc>
+<g font-size="12.5" text-anchor="middle">
+<rect x="70" y="4" width="200" height="46" rx="8" fill="none" stroke="#2f3542" stroke-width="1.5"/><text x="170" y="32" fill="#a8b0bd">Written brief, pass condition</text>
+<rect x="70" y="70" width="200" height="46" rx="8" fill="none" stroke="#2f3542" stroke-width="1.5"/><text x="170" y="98" fill="#a8b0bd">Agent builds one task</text>
+<rect x="70" y="136" width="200" height="46" rx="8" fill="none" stroke="#3d8ef0" stroke-width="1.5"/><text x="170" y="164" fill="#a8b0bd">Check: types, lint, tests</text>
+<rect x="70" y="202" width="200" height="46" rx="8" fill="none" stroke="#3d8ef0" stroke-width="1.5"/><text x="170" y="230" fill="#a8b0bd">Browser QA + separate review</text>
+<rect x="70" y="268" width="200" height="46" rx="8" fill="none" stroke="#3d8ef0" stroke-width="1.5"/><text x="170" y="296" fill="#a8b0bd">Deploy after check + build</text>
+</g>
+<g stroke="#6b7482" stroke-width="1.5" fill="none">
+<path d="M170 50 V66"/><path d="M170 116 V132"/><path d="M170 182 V198"/><path d="M170 248 V264"/>
+<path d="M270 225 H300 V93 H274" stroke-dasharray="4 4"/>
+</g>
+<text x="306" y="164" fill="#6b7482" font-size="11.5" text-anchor="start" transform="rotate(90 306 164)">fail: back</text>
+</svg>
+      <figcaption>The loop each task went through. The dashed line is the usual outcome of a failed check or review: the implementer gets the finding and tries again.</figcaption>
+    </figure>
+    <p>When I re-ran the suite for this post it reported 3,852 passing tests in 138 files. That number deserves a caveat: 1,778 of them cover the simulation core, and everything else covers rendering, input, menus, app wiring, audio, the build scripts and the avatar tool. A large count is easy for agents to produce. What mattered more was tests that encode a decision. One review found that the signature combos could not land in open space. The fix had a written pass condition (all four combos land from every gap at which the opener connects, in both directions), and the chosen constant was the smallest value that met it. Another: a live match ended in 37 seconds, so the plan gained a test that AI-versus-AI rounds have a median length between 25 and 50 seconds.</p>
+
+    <h2>Story one: choosing a model under real constraints</h2>
+    <p>The fighters needed to become 3D models without a cloud service, on a 6 GB GPU, under a licence that allows use from South Korea, where I live, and commercial use later. Those three constraints removed most of the field before any quality test.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Model</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Hunyuan3D</td><td>Ruled out on licence: it excludes South Korea</td></tr>
+          <tr><td>TRELLIS</td><td>Ruled out: too much GPU memory, and its texture step uses a non-commercial rasteriser</td></tr>
+          <tr><td>SPAR3D</td><td>Tested: too much GPU memory to run well on 6 GB, and flatter meshes on these drawings</td></tr>
+          <tr><td><b>SF3D</b></td><td><b>Chosen:</b> about 6 GB, under a minute per fighter, free under US$1M annual revenue</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The licence check came first: reading a licence is cheaper than tuning a model you cannot ship. SF3D's own obligations were written into the pipeline notes and shipped (the "Powered by Stability AI" credit line on the About screen, and a NOTICE file).</p>
+
+    <h3>One variable at a time</h3>
+    <p>The first meshes were flat cut-outs with a faint mirrored face on the back of the head. Instead of swapping models again, the next step was an experiment on one fighter that changed one thing per run: the same cut-out with a transparent background, the same cut-out on white, and a three-quarter view. On white, SF3D produced a round head with hair on the back. A plausible reason is that SF3D removes the background itself, as it does in training, so a white background is closer to what it expects. Nine of the 12 fighters were regenerated on white. The other three kept their earlier builds: one lost its legs on white, one stayed flat either way, and one was the pilot build.</p>
+
+    <h2>Story two: floating fighters, measured instead of guessed</h2>
+    <p>After the rounder models went in, some fighters looked as if they hovered above the floor. The easy guesses were the model, the normalisation step or the camera. Instead, a diagnostic page posed each skinned mesh and recorded its lowest point.</p>
+    <p>The measurement found the cause quickly. The rig set a minimum pelvis height of half the model's depth in every pose. That clearance was meant to stop a knocked-down body sinking through the floor, but it was applied while standing too. The rounder models were deeper, so they rose 0.26 to 0.55 units in the fighting stance. The fix scales the clearance with how far the body tilts: zero upright, half the depth lying flat. The change is a one-line function, with tests for upright, flat and in between.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Lowest point in the fighting stance</th><th>Result (game units)</th></tr></thead>
+        <tbody>
+          <tr><td>Before the fix, rounder models</td><td class="num">+0.26 to +0.55<span class="sub">above the floor</span></td></tr>
+          <tr><td>After the fix and later polish, 11 of 12 models</td><td class="num">-0.107 to +0.003</td></tr>
+          <tr><td>After the fix and later polish, the deepest model</td><td class="num">-0.221<span class="sub">forward toe dips, open</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The last row stays in on purpose: one toe still dips below the -0.15 band we set. A report saying "every fighter stands on the floor" would read better and be slightly wrong.</p>
+
+    <h2>What I would keep</h2>
+    <ul>
+      <li><b>A rulings log.</b> 55 decisions were written down with the reason and the cost if wrong, such as "specials easier to dodge; tune after playtest". It made reviewing a week's work possible.</li>
+      <li><b>Separate maker and checker.</b> On one start-up timing, the implementer measured 770 ms slower and the reviewer's measurement was within noise. Neither was taken on trust; it was accepted for now and marked for measurement on a real phone.</li>
+      <li><b>Human gates where only a human can judge.</b> The real-phone check was mine: the gate closed only when the live build worked on my iPhone. Bots could prove balance numbers, not whether the difficulty ladder feels fair to a person.</li>
+      <li><b>Content rules in the plan and in tests.</b> The plan forbids flags, symbols and religious markers on any costume and fixes the disclaimer text. Tests check the game's copy against content rules and hold all caricatures to one skin value and to shared ranges for facial features and body proportions.</li>
+    </ul>
+
+    <h2>What I would do differently</h2>
+    <ul>
+      <li><b>Write the hard constraints before the first prototype.</b> Licence, GPU memory and content limits decided more than any benchmark did. Some of the fighters' look work was redone when later rules changed it.</li>
+      <li><b>Track numbers in one place.</b> The test count drifted across hand-off notes (3,686, then 3,753, now 3,852) and an older write-up still says "about 1.5 MB" for a site whose build is about 3.6 MB with all 12 models. A generated stats file would have stopped that.</li>
+      <li><b>Review generated content earlier.</b> The English and Hindi trailers are made from captured gameplay, but the Hindi script was written by an agent and nobody, me included, has yet proofread it line by line; its current voice is licensed for non-commercial use only.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li><b>I did not write most of this code.</b> What I can claim is the direction, the gates and the owner decisions in the notes; most rulings were the agents', recorded for me to review. That is a different claim from having typed it.</li>
+      <li><b>One week, one owner.</b> A solo project run like a small team is not evidence about how a team of people should adopt agents.</li>
+      <li><b>Tests are not playtests.</b> The suite proves the rules are deterministic and the decisions hold. Whether the game is fun is a separate question that only players answer.</li>
+    </ul>
+
+    <div class="post-foot">
+      <p>Play it: <a href="https://kursikushti.pages.dev">kursikushti.pages.dev</a> (free, in the browser, no account). Previous post: <a href="/blog/int8-slower-edge-dms/">INT8 made my models 6 to 11 times slower</a>.</p>
+      <p><a href="/blog/">&larr; All posts</a></p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>Rohit Thakur &middot; Seoul, South Korea</div>
+    <div class="mono">built from scratch &middot; no frameworks</div>
+  </div>
+</footer>
+</body>
+</html>
